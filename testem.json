@@ -1,6 +1,17 @@
 {
+  "launchers": {
+    "Node": {
+      "command": "node test/bundle.js",
+      "protocol": "tap"
+    }
+  },
   "framework": "tap",
-  "src_files": ["build/test.js"],
-  "launch_in_dev": [ "chrome" ]
-
+  "src_files": [
+    "src/**/*.js",
+    "test/**/*.js"
+  ],
+  "serve_files": ["test/bundle.js"],
+  "before_tests": "browserify test/index.js -o test/bundle.js",
+  "launch_in_dev": ["chrome"],
+  "on_exit": "rm test/bundle.js",
 }

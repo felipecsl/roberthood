@@ -8,3 +8,5 @@ node_modules
 
 #build
 build
+temp
+test/bundle.js

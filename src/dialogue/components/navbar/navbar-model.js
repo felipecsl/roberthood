@@ -5,7 +5,6 @@ const model = ({actions}) => {
     url: actions.click$
       .map(event => event.target.href.replace(location.origin, ``)),
   }).startWith()
+}
 
-};
-
-export default model;
+export default model
