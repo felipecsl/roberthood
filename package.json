@@ -4,9 +4,10 @@
   "description": "Cycle Browserify Babel boilerplate.",
   "main": "index.js",
   "scripts": {
-    "clean": "rimraf test/fixtures/out",
+    "clean": "rimraf build",
     "build:js": "browserify src/app.js -d | exorcist build/app.js.map > build/app.js",
-    "build:css": "node-sass src/styles/main.scss -o build --source-map",
+    "build:css": "node-sass src/styles/main.scss --outFile main.css --source-map true --output build",
+    "build:css:prod": "node-sass src/styles/main.scss --outFile main.css --source-map true --output build --output-style compressed",
     "watch:js": "watchify src/app.js -t babelify -o build/app.js -dv",
     "watch:scss": "chokidar src/styles/*.scss -c 'npm run build:css'",
     "watch": "npm-run-all --parallel watch:*",
@@ -14,7 +15,7 @@
     "serve": "live-server . --quiet",
     "test": "testem",
     "lint": "eslint src test --fix",
-    "start": "npm-run-all serve watch"
+    "start": "npm-run-all build:css --parallel serve watch"
   },
   "devDependencies": {
     "babel-cli": "^6.5.1",
