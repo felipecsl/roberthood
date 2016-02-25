@@ -13,7 +13,6 @@ const routes = {
 function ContentRouter(sources) {
   const {router, state$} = sources
   const {path$, value$} = router.define(routes)
-
   const childrenDOM$ = path$.zip(value$,
     (path, value) => {
       const comp = value({

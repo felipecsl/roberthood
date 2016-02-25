@@ -2,6 +2,7 @@
   "extends": "eslint-config-cycle",
   "parser": "babel-eslint",
   "globals": {
-    "location": true
+    "location": true,
+    "require": true
   }
 }

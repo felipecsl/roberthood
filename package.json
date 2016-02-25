@@ -15,7 +15,8 @@
     "serve": "live-server . --quiet",
     "test": "testem",
     "lint": "eslint src test --fix",
-    "start": "npm-run-all build:css --parallel serve watch"
+    "start": "npm-run-all build:css --parallel serve watch",
+    "build:test": "browserify test/index.js -o build/testbundle.js"
   },
   "devDependencies": {
     "babel-cli": "^6.5.1",
@@ -65,10 +66,7 @@
           "sourceMapRelative": "."
         }
       ],
-      [
-        "require-globify",
-        {}
-      ]
+      "require-globify"
     ]
   }
 }

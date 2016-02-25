@@ -21,12 +21,7 @@ function main(sources) {
   const Content = ContentRouter(sources)
   const {path$, state$} = Content
   const Nav = navbar(sources, path$)
-  const view$ = Observable.just(
-    view(
-      Nav.DOM,
-      Content.DOM
-    )
-  )
+  const view$ = Observable.just(view(Nav.DOM, Content.DOM))
 
   return {
     DOM: view$,
