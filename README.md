@@ -5,6 +5,7 @@ it is currently a simpler setup. So far it is not implementing hot module reload
 
 The main dependencies for this boilerplate are:
 
+- budo for watching and serving the app for development
 - Browserify for bundling the JavaScript
 - Watchify for watching JavaScript
 - node-sass for Scss
@@ -46,3 +47,7 @@ The npm commands in **bold** letters are the ones you might use the most.
 | `npm run build:css` | Compiles the Sass files to CSS. |
 | `npm run build:css:prod` | Compiles the Sass files to CSS for production. |
 | `npm run watch:scss` | Build and watch the Sass files with node-sass and chokidar. |
+
+# License
+
+MIT © [Kahlil Lechelt](http://kahlil.info)
