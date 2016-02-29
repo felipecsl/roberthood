@@ -1,8 +1,12 @@
 {
   "name": "cycle-browserify-boilerplate",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Cycle Browserify Babel boilerplate.",
   "main": "index.js",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/kahlil/cycle-browserify-boilerplate.git"
+  },
   "scripts": {
     "clean": "rimraf build",
     "budo": "budo src/app.js -l -o",
@@ -64,5 +68,6 @@
       ],
       "require-globify"
     ]
-  }
+  },
+  "license": "MIT"
 }
