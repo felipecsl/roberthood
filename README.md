@@ -38,8 +38,7 @@ The npm commands in **bold** letters are the ones you might use the most.
 | npm Command | Description |
 | ----------- | ----------- |
 | `npm run clean` | Deletes the build folder. |
-| `npm run budo` | Starts a development server, compiles and watches  
-JavaScript and watches other assets. |
+| `npm run budo` | Starts a development server, compiles and watches JavaScript and watches other assets. |
 | `npm run build:js:prod` | Builds JavaScript for production with browserify and Uglify, generates external source maps. |
 | `npm run build:css` | Compiles the Sass files to CSS. |
 | `npm run build:css:prod` | Compiles the Sass files to CSS for production. |
