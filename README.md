@@ -37,12 +37,12 @@ The npm commands in **bold** letters are the ones you might use the most.
 
 | npm Command | Description |
 | ----------- | ----------- |
+| **`npm test`** | Run browser tests in testem. |
+| **`npm run lint`** | Lint your files Cycle.js-style. |
+| **`npm start`** | Build everything, start all watch tasks and serve the index.html file. |
 | `npm run clean` | Deletes the build folder. |
 | `npm run budo` | Starts a development server, compiles and watches JavaScript and watches other assets. |
 | `npm run build:js:prod` | Builds JavaScript for production with browserify and Uglify, generates external source maps. |
 | `npm run build:css` | Compiles the Sass files to CSS. |
 | `npm run build:css:prod` | Compiles the Sass files to CSS for production. |
 | `npm run watch:scss` | Build and watch the Sass files with node-sass and chokidar. |
-| `npm run lint` | Lint your files Cycle.js-style. |
-| `npm test` | Run browser tests in testem. |
-| `npm start` | Build everything, start all watch tasks and serve the index.html file. |
