@@ -3,6 +3,8 @@
 While this boilerplate is heavily inspired by [cycle-webpack-boilerplate](https://github.com/Cmdv/cycle-webpack-boilerplate)
 it is currently a simpler setup. So far it is not implementing hot module reloading.
 
+It _does_ provide a nice development environment with live reloading JavaScript and CSS, testing with zuul and linting with eslint.
+
 The main dependencies for this boilerplate are:
 
 - [budo](http://npm.im/budo) for watching and serving the app for development
@@ -20,6 +22,8 @@ First clone this repo and install the dependencies.
 ```shell
 git clone https://github.com/kahlil/cycle-browserify-boilerplate.git && npm install
 ```
+
+Or just download [the ZIP](https://github.com/kahlil/cycle-browserify-boilerplate/archive/master.zip).
 
 Then change the project name, repository link and description in your package.json and change
 the remote URL for your Git repo.
