@@ -32,6 +32,8 @@ git remote set-url origin master [YOUR GIT URL HERE]
 
 Or just download [the ZIP](https://github.com/kahlil/cycle-browserify-boilerplate/archive/master.zip) and initialize a fresh Git repo with `git init`.
 
+Then `npm install`.
+
 ## npm scripts Documentation
 
 These are all the npm scripts tasks that come with this boilerplate.
