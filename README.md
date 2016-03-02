@@ -28,7 +28,7 @@ the remote URL for your Git repo.
 git remote set-url origin master [YOUR GIT URL HERE]
 ```
 
-## `npm scripts` Documentation
+## npm scripts Documentation
 
 These are all the npm scripts tasks that come with this boilerplate.
 
