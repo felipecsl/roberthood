@@ -23,14 +23,14 @@ First clone this repo and install the dependencies.
 git clone https://github.com/kahlil/cycle-browserify-boilerplate.git && npm install
 ```
 
-Or just download [the ZIP](https://github.com/kahlil/cycle-browserify-boilerplate/archive/master.zip).
-
 Then change the project name, repository link and description in your package.json and change
 the remote URL for your Git repo.
 
 ```shell
 git remote set-url origin master [YOUR GIT URL HERE]
 ```
+
+Or just download [the ZIP](https://github.com/kahlil/cycle-browserify-boilerplate/archive/master.zip) and initialize a fresh Git repo with `git init`.
 
 ## npm scripts Documentation
 
