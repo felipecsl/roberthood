@@ -5,15 +5,13 @@ it is currently a simpler setup. So far it is not implementing hot module reload
 
 The main dependencies for this boilerplate are:
 
-- budo for watching and serving the app for development
-- Browserify for bundling the JavaScript
-- Watchify for watching JavaScript
-- node-sass for Scss
-- chokidar-cli for watching Sass files
-- tape and testem for testing
-- Eslint with the Cycle.js plugin for linting
-- live-server as a dev server with livereload
-- rimraf for cleaning the project
+- [budo](http://npm.im/budo) for watching and serving the app for development
+- [Browserify](http://npm.im/browserify) for bundling the JavaScript
+- [node-sass](http://npm.im/node-sass) for Scss
+- [chokidar-cli](http://npm.im/chokidar-cli) for watching Sass files
+- [tape](http://npm.im/tape) and [zuul](http://npm.im/zuul) for testing
+- [Eslint](http://npm.im/eslint) with the Cycle.js plugin for linting
+- [rimraf](http://npm.im/rimraf) for cleaning the project
 
 ## Usage
 
@@ -38,7 +36,7 @@ The npm commands in **bold** letters are the ones you might use the most.
 
 | npm Command | Description |
 | ----------- | ----------- |
-| **`npm test`** | Run browser tests in testem. |
+| **`npm test`** | Run browser tests in zuul. |
 | **`npm run lint`** | Lint your files Cycle.js-style. |
 | **`npm start`** | Build everything, start all watch tasks and serve the index.html file. |
 | `npm run clean` | Deletes the build folder. |

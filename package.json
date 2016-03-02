@@ -4,8 +4,8 @@
   "description": "Cycle Browserify Babel boilerplate.",
   "main": "index.js",
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/kahlil/cycle-browserify-boilerplate.git"
+    "type": "git",
+    "url": "https://github.com/kahlil/cycle-browserify-boilerplate.git"
   },
   "scripts": {
     "clean": "rimraf build",
@@ -14,7 +14,7 @@
     "build:css": "node-sass src/styles/main.scss --outFile main.css --source-map true --output build",
     "build:css:prod": "node-sass src/styles/main.scss --outFile main.css --source-map true --output build --output-style compressed",
     "watch:scss": "chokidar src/styles/*.scss -c 'npm run build:css'",
-    "test": "testem",
+    "test": "zuul --local 8080 test/test.js",
     "lint": "eslint src test --fix",
     "start": "npm-run-all clean build:css --parallel watch:scss budo"
   },
@@ -38,7 +38,8 @@
     "tape": "^4.4.0",
     "testem": "^1.2.2",
     "uglify-js": "^2.6.1",
-    "watchify": "^3.7.0"
+    "watchify": "^3.7.0",
+    "zuul": "^3.9.0"
   },
   "dependencies": {
     "@cycle/core": "^6.0.2",
