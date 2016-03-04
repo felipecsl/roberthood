@@ -3,15 +3,7 @@ import navbar from './dialogue/components/navbar/navbar-index'
 import ContentRouter from './dialogue/components/content-router/content-router-index'
 // @cycle/dom has a hyperscript-helper built in so you can
 // declare all html elements you are going to use like div, h1, h2, nav etc
-import {div} from '@cycle/dom'
-
-// view is what we'd like to display in this case our sidebar + content all wrapped in a div
-const view = (nav, content) => {
-  return div(`#layout .pure-g`, [
-    div(`.sidebar .pure-u-1 .pure-u-md-1-4`, div(`.header`, [nav])),
-    div(`.content .pure-u-1 .pure-u-md-3-4`, [content]),
-  ])
-}
+import {div, h1} from '@cycle/dom'
 
 // we need to pass our components to cycle and give them a "source" when they come from cycle
 // creating this "cycle", here you can see that view$ is a Rx Observable containing out "view"
@@ -20,12 +12,17 @@ const view = (nav, content) => {
 function main(sources) {
   const Content = ContentRouter(sources)
   const {path$, state$} = Content
-  const Nav = navbar(sources, path$)
-  const view$ = Observable.just(view(Nav.DOM, Content.DOM))
+  let savedToken = window.localStorage.getItem("token")
+
+  if (savedToken === 'undefined' || savedToken === null) {
+    savedToken = undefined
+  }
 
   return {
-    DOM: view$,
-    state$: state$.startWith({counter: 0}),
+    DOM: Content.DOM,
+    HTTP: Content.HTTP,
+    state$: state$.startWith({user: ({}), token: savedToken}),
+    historicalData: Content.historicalData
   }
 }
 

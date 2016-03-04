@@ -1,6 +1,26 @@
-// homeIntent creates streams from click events on .increment & .decrement
-const homeIntent = s => ({
-  inc$: s.DOM.select(`.increment`).events(`click`).map(() => +1),
-  dec$: s.DOM.select(`.decrement`).events(`click`).map(() => -1),
-})
+import {Observable} from 'rx'
+// homeIntent creates streams from login button click events
+const homeIntent = sources => {
+  return sources.DOM.select('.login')
+    .events('click')
+    .debounce(500)
+    .flatMap(ev => Observable.zip(
+      sources.DOM.select('.username')
+        .observable
+        .flatMap(x => x)
+        .map(e => e.value)
+        .take(1),
+      sources.DOM.select('.password')
+        .observable
+        .flatMap(x => x)
+        .map(e => e.value)
+        .take(1),
+      (u, p) => ({
+        username: u,
+        password: p
+      })
+    ))
+    .filter(data => data.username.length > 0)
+    .filter(data => data.password.length > 0)
+}
 export default homeIntent

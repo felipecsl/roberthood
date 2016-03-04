@@ -1,12 +1,10 @@
 import Home from '../../pages/home/home-index'
-import Page1 from '../../pages/page1/page1-index'
-import Page2 from '../../pages/page2/page2-index'
+import Portfolio from '../../pages/portfolio/portfolio-index'
 import Page404 from '../../pages/page404/page404-index'
 
 const routes = {
   '/': Home,
-  '/page1': Page1,
-  '/page2': Page2,
+  '/portfolio': Portfolio,
   '*': Page404,
 }
 
@@ -22,13 +20,17 @@ function ContentRouter(sources) {
       })
       return {
         DOM: comp.DOM,
+        HTTP: comp.HTTP,
         state$: comp.state$,
+        historicalData: comp.historicalData,
       }
     }
   )
 
   return {
     DOM: childrenDOM$.flatMapLatest(s => s.DOM),
+    HTTP: childrenDOM$.flatMapLatest(s => s.HTTP),
+    historicalData: childrenDOM$.flatMapLatest(s => s.historicalData),
     state$: childrenDOM$.flatMapLatest(s => s.state$),
     path$: path$,
   }
