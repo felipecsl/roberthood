@@ -9,7 +9,7 @@
   },
   "scripts": {
     "clean": "rimraf build",
-    "budo": "budo src/app.js -l -o",
+    "budo": "budo src/app.js --live --open",
     "mkdirp:build": "mkdirp build",
     "browserify": "browserify src/app.js -d | exorcist build/app.js.map > build/app.js",
     "uglify": "uglifyjs build/app.js --in-source-map build/app.js.map --source-map build/app.min.js.map --output build/app.min.js --prefix relative --compress --mangle",
