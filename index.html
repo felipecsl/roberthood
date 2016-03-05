@@ -32,13 +32,12 @@
   <!-- Tile icon for Win8 (144x144) -->
   <meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png">
 
-  <link rel="stylesheet" href="/build/main.css">
   <!-- build:css styles/main.css -->
   <link rel="stylesheet" href="styles/main.css">
   <!-- endbuild-->
 
   <!-- build:js bower_components/webcomponentsjs/webcomponents-lite.min.js -->
-  <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="/webcomponentsjs/webcomponents-lite.js"></script>
   <!-- endbuild -->
   <!-- Because this project uses vulcanize this should be your only html import
        in this file. All other imports should go in elements.html -->
@@ -46,7 +45,7 @@
 
   <!-- For shared styles, shared-styles.html import in elements.html -->
   <style is="custom-style" include="shared-styles"></style>
-  <title>HoodRobin</title>
+  <title>Rabunhod</title>
 </head>
 <body unresolved>
   <!-- build:remove -->
@@ -97,7 +96,7 @@
 
           <!-- Application name -->
           <div class="middle middle-container">
-            <div class="app-name">HoodRobin</div>
+            <div class="app-name">Rabunhod</div>
           </div>
 
           <!-- Application sub title -->
@@ -119,6 +118,6 @@
     </paper-drawer-panel>
   </template>
 
-  <script src="app.js"></script>
+  <script src="/javascripts/bundle.js"></script>
 </body>
 </html>

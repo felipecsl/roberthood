@@ -1,6 +1,7 @@
 import {run} from '@cycle/core'
 import {makeDOMDriver} from '@cycle/dom'
 import {makeHistoryDriver} from 'cyclic-history'
+import {makeHTTPDriver} from '@cycle/http'
 import {makeRouterDriver} from 'cyclic-router'
 import {createHashHistory} from 'history'
 import {makeStateDriver} from './state-driver'
@@ -13,9 +14,10 @@ app.addEventListener('dom-change', function() {
   // History is using our makeHistoryDriver to deal with routing.
   const sources = {
     DOM: makeDOMDriver(`#application`),
+    HTTP: makeHTTPDriver(),
     router: makeRouterDriver(makeHistoryDriver(createHashHistory())),
     state$: makeStateDriver(),
   }
 
-  run(Main,sources)
+  run(Main, sources)
 })
