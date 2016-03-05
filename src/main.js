@@ -8,8 +8,8 @@ import {div} from '@cycle/dom'
 // view is what we'd like to display in this case our sidebar + content all wrapped in a div
 const view = (nav, content) => {
   return div(`#layout .pure-g`, [
-    div(`.sidebar .pure-u-1 .pure-u-md-1-4`, div(`.header`, [nav])),
-    div(`.content .pure-u-1 .pure-u-md-3-4`, [content]),
+    div(div(`.header`, [nav])),
+    div([content]),
   ])
 }
 

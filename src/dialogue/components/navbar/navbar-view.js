@@ -8,8 +8,6 @@ function view(sources, path$) {
 
   return path$.map(() => {
     return div([
-      h1(`.brand-title`, [`An APP`]),
-      h2(`.brand-tagline`, [`Showcasing Cycle.js`]),
       nav(`.nav`, [
         ul(`.nav-list`, [
           li(`.nav-item .link`, [
