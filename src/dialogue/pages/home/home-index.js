@@ -14,7 +14,7 @@ const Home = (sources) => {
   }))
 
   return {
-    DOM: view(state$$),
+    DOM: view(sources, state$$),
     HTTP: request$,
     state$: state$$,
   }

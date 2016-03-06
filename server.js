@@ -29,24 +29,27 @@ server.get('/', function (req, res) {
 });
 
 server.post('/auth', function (req, res) {
-  var options = {
-    url: 'https://api.robinhood.com/api-token-auth/',
-    form: req.body,
-    headers: {
-      'User-Agent': 'okhttp/3.2.0',
-      'X-Robinhood-API-Version': '1.60.1'
-    }
-  };
-  request.post(options, function (error, response, body) {
-    res.header("Content-Type", "application/json");
-    if (!error && response.statusCode == 200) {
-      res.status(response.statusCode).send(body);
-    } else {
-      res.status(response.statusCode).send(error);
-    }
-  });
+  res.header("Content-Type", "application/json");
+  res.status(200).send("{\"token\":\"foo\"}");
+  // var options = {
+  //   url: 'https://api.robinhood.com/api-token-auth/',
+  //   form: req.body,
+  //   headers: {
+  //     'User-Agent': 'okhttp/3.2.0',
+  //     'X-Robinhood-API-Version': '1.60.1'
+  //   }
+  // };
+  // request.post(options, function (error, response, body) {
+  //   res.header("Content-Type", "application/json");
+  //   if (!error && response.statusCode == 200) {
+  //     res.status(response.statusCode).send(body);
+  //   } else {
+  //     res.status(response.statusCode).send(error);
+  //   }
+  // });
 });
 
-server.listen(process.env.PORT || 3000, function () {
-  console.log('Example app listening on port 3000!');
+var port = process.env.PORT || 3000
+server.listen(port, function () {
+  console.log('App listening on port ' + port);
 });

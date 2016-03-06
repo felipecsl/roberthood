@@ -1,4 +1,4 @@
-import Rx from 'rx'
+import {Observable} from 'rx'
 import view from './portfolio-view'
 
 const Portfolio = (sources) => {
@@ -6,8 +6,9 @@ const Portfolio = (sources) => {
   const $view = view(state$)
 
   return {
-    DOM: Rx.Observable.just($view),
-    state$: state$,
+    DOM: Observable.just($view),
+    HTTP: sources.HTTP,
+    state$: state$
   }
 }
 
