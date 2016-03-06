@@ -13,42 +13,10 @@ function main(sources) {
   const Content = ContentRouter(sources)
   const {path$, state$} = Content
   const Nav = navbar(sources, path$)
-  const loginRequest$ = sources.DOM.select('.login')
-    .events('click')
-    .debounce(500)
-    .flatMap(ev => Observable.zip(
-      sources.DOM.select('.username')
-        .observable
-        .flatMap(x => x)
-        .map(e => e.value)
-        .take(1),
-      sources.DOM.select('.password')
-        .observable
-        .flatMap(x => x)
-        .map(e => e.value)
-        .take(1), (u, p) => ({
-          username: u,
-          password: p
-    })))
-    .filter(data => data.username.length > 0)
-    .filter(data => data.password.length > 0)
-    .map(data => ({
-      url: '/auth',
-      method: 'POST',
-      type: 'application/x-www-form-urlencoded',
-      send: Object.keys(data).map(k => k + '=' + data[k]).join('&')
-    }));
-  const view$ = sources.HTTP
-    .flatMap(x => x)
-    .map(res => res.body.token)
-    .startWith("")
-    .map(result => h1(`.token`, result))
-    .catch(e => Observable.just(h1(`.error`, e.response.text)))
-    .merge(Content.DOM);
 
   return {
-    DOM: view$,
-    HTTP: loginRequest$,
+    DOM: Content.DOM,
+    HTTP: Content.HTTP,
     state$: state$.startWith({}),
   }
 }

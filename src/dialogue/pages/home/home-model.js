@@ -1,12 +1,10 @@
-import Rx from 'rx'
-// merging our clicks from our intent
-// (a,b) -> num
-const homeModel = ({inc$, dec$, state$}) => {
-  return Rx.Observable.merge(
-    state$.take(1)
-      .map(({counter}) => parseFloat(counter)), inc$, dec$)
-      .scan((x, y) => x + y)
-      .map(x => ({counter: x}))
+import {Observable} from 'rx'
+
+const homeModel = (request$, state$) => {
+  return Observable.merge(state$.take(1),
+    request$.flatMap(x => x)
+      .map(res => res.body)
+      .catch(e => Observable.just(e.response.text)))
 }
 
 export default homeModel
