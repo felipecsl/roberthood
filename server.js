@@ -1,10 +1,14 @@
-var fs = require("fs");
-var browserify = require("browserify");
-var babelify = require("babelify");
+let livereload = require('express-livereload')
+let fs = require("fs");
+let browserify = require("browserify");
+let babelify = require("babelify");
 let express = require('express');
-let sassMiddleware = require('node-sass-middleware');
+let bodyParser = require('body-parser');
 let path = require('path');
+let request = require('request');
 let server = express();
+
+livereload(server, {})
 
 browserify({ debug: true })
   .transform(babelify)
@@ -15,23 +19,34 @@ browserify({ debug: true })
   .pipe(fs.createWriteStream("public/javascripts/bundle.js"));
 
 server.engine('html', require('ejs').renderFile);
+server.use(bodyParser.urlencoded({ extended: true }));
 server.use(express.static('public'));
 server.use(express.static('bower_components'));
 server.set('views', './')
-server.use(sassMiddleware({
-    /* Options */
-    src: __dirname,
-    dest: path.join(__dirname, 'public'),
-    debug: true,
-    outputStyle: 'compressed',
-    prefix:  '/styles'  // Where prefix is at <link rel="stylesheets" href="prefix/style.css"/>
-}));
 
 server.get('/', function (req, res) {
   res.render('index.html');
 });
 
-let port = process.env.PORT || 3000;
-server.listen(port, function () {
+server.post('/auth', function (req, res) {
+  var options = {
+    url: 'https://api.robinhood.com/api-token-auth/',
+    form: req.body,
+    headers: {
+      'User-Agent': 'okhttp/3.2.0',
+      'X-Robinhood-API-Version': '1.60.1'
+    }
+  };
+  request.post(options, function (error, response, body) {
+    res.header("Content-Type", "application/json");
+    if (!error && response.statusCode == 200) {
+      res.status(response.statusCode).send(body);
+    } else {
+      res.status(response.statusCode).send(error);
+    }
+  });
+});
+
+server.listen(process.env.PORT || 3000, function () {
   console.log('Example app listening on port 3000!');
 });

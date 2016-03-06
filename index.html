@@ -5,7 +5,7 @@
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="generator" content="Polymer Starter Kit">
-  <title>Polymer Starter Kit</title>
+  <title>Robert Hood</title>
 
   <!-- Place favicon.ico in the `app/` directory -->
 
@@ -45,7 +45,8 @@
 
   <!-- For shared styles, shared-styles.html import in elements.html -->
   <style is="custom-style" include="shared-styles"></style>
-  <title>Rabunhod</title>
+  <style is="custom-style" include="iron-flex iron-flex-alignment"></style>
+  <title>Robert Hood</title>
 </head>
 <body unresolved>
   <!-- build:remove -->
@@ -96,7 +97,7 @@
 
           <!-- Application name -->
           <div class="middle middle-container">
-            <div class="app-name">Rabunhod</div>
+            <div class="app-name">Robert Hood</div>
           </div>
 
           <!-- Application sub title -->
@@ -107,12 +108,15 @@
 
         <!-- Main Content -->
         <div class="content">
-          <iron-pages>
-            <section data-route="home" tabindex="-1" class="iron-selected">
-              <paper-material elevation="1">
-                <div id="application"></div>
-              </paper-material>
-            </section>
+          <div class="layout horizontal center-justified">
+            <iron-pages>
+              <section data-route="home" tabindex="-1" class="iron-selected">
+                <paper-material elevation="1">
+                  <div id="application"></div>
+                </paper-material>
+              </section>
+            </iron-pages>
+          </div>
         </div>
       </paper-scroll-header-panel>
     </paper-drawer-panel>

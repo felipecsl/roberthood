@@ -6,6 +6,7 @@ npm-debug.log.*
 # Dependency directory
 node_modules
 bower_components
+public/javascripts/bundle.js
 
 #build
 build

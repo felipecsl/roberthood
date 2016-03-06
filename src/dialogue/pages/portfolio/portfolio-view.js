@@ -4,7 +4,7 @@ const view = state$ => {
   return state$.map(({counter}) => {
     return div(`.page1`,[
       h1(`.content-subhead`, [`Page 1`]),
-      h1([`This is Page 1`]),
+      h1([`Portfolio`]),
       h2([`Counter: ` + counter]),
     ])
   })

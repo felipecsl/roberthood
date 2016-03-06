@@ -1,7 +1,7 @@
 import Rx from 'rx'
-import view from './page2-view'
+import view from './portfolio-view'
 
-const Page2 = (sources) => {
+const Portfolio = (sources) => {
   const state$ = sources.state$
   const $view = view(state$)
 
@@ -11,4 +11,4 @@ const Page2 = (sources) => {
   }
 }
 
-export default Page2
+export default Portfolio
