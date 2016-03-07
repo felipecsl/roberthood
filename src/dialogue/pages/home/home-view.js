@@ -16,7 +16,7 @@ const view = (sources, state$) => {
     } else {
       // render post login UI or redirect somewhere else?
       return div([
-        h1(`Logged in! Token= ${s.token}`),
+        h1(`Logged in!`),
         a(`.something`, {href: portfolioHref}, [`Portfolio`]),
       ])
     }

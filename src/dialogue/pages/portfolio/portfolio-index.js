@@ -1,14 +1,20 @@
 import {Observable} from 'rx'
 import view from './portfolio-view'
+import model from './portfolio-model'
 
 const Portfolio = (sources) => {
   const state$ = sources.state$
-  const $view = view(state$)
+  const state$$ = model(sources.HTTP, state$)
+  const view$ = view(state$$)
+  const request$ = state$$.take(1).map(({token}) => ({
+    method: 'GET',
+    url: '/user?token=' + token
+  }))
 
   return {
-    DOM: Observable.just($view),
-    HTTP: sources.HTTP,
-    state$: state$
+    DOM: view$,
+    HTTP: request$,
+    state$: state$$
   }
 }
 

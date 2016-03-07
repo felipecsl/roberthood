@@ -12,12 +12,11 @@ import {div, h1} from '@cycle/dom'
 function main(sources) {
   const Content = ContentRouter(sources)
   const {path$, state$} = Content
-  const Nav = navbar(sources, path$)
 
   return {
     DOM: Content.DOM,
     HTTP: Content.HTTP,
-    state$: state$.startWith({}),
+    state$: state$.startWith({user: ({}) }),
   }
 }
 
