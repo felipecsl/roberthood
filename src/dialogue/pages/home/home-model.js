@@ -1,10 +1,11 @@
 import {Observable} from 'rx'
 
-const homeModel = (request$, state$) => {
-  return Observable.merge(state$.take(1),
-    request$.flatMap(x => x)
+const homeModel = (response$) => {
+  return response$
+      .flatMap(x => x)
       .map(res => res.body)
-      .catch(e => Observable.just(e.response.text)))
+      .share()
+      .startWith({})
 }
 
 export default homeModel

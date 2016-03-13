@@ -16,7 +16,8 @@ function main(sources) {
   return {
     DOM: Content.DOM,
     HTTP: Content.HTTP,
-    state$: state$.startWith({user: ({}) }),
+    state$: state$.startWith({user: ({}), account: ({}), portfolio: ({})})
+      //.doOnNext(s => console.log(`New state:`, s)),
   }
 }
 

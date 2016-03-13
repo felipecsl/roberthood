@@ -6,7 +6,7 @@ const view = state$ => {
       p([`Username: ${user.username}`]),
       p([`First Name: ${user.first_name}`]),
       p([`Last Name: ${user.last_name}`]),
-      p([`Email Name: ${user.email}`])
+      p([`Email: ${user.email}`])
     ])
   })
 }

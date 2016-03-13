@@ -12,6 +12,9 @@ app.addEventListener('dom-change', function() {
   // This is the Cycle run. first argument is our mainApp then an object:
   // DOM is the ID or class we want the cycle to render onto our page.
   // History is using our makeHistoryDriver to deal with routing.
+
+  console.log("Initializing Cycle...")
+
   const sources = {
     DOM: makeDOMDriver(`#application`),
     HTTP: makeHTTPDriver(),

@@ -1,7 +1,7 @@
 import {Observable} from 'rx'
 // homeIntent creates streams from login button click events
-const homeIntent = sources =>
-  sources.DOM.select('.login')
+const homeIntent = sources => {
+  return sources.DOM.select('.login')
     .events('click')
     .debounce(500)
     .flatMap(ev => Observable.zip(
@@ -22,5 +22,5 @@ const homeIntent = sources =>
     ))
     .filter(data => data.username.length > 0)
     .filter(data => data.password.length > 0)
-
+}
 export default homeIntent

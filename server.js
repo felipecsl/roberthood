@@ -54,12 +54,49 @@ server.get('/user', function (req, res) {
       "Authorization": "Token " + req.query.token
     }
   };
-  proxyRequest(options, res);
+  // proxyRequest(options, res);
+  res.header("Content-Type", "application/json");
+  res.send({
+    username: "felipecsl",
+    first_name: "Felipe",
+    last_name: "Lima",
+    id_info: "https://api.robinhood.com/user/id/",
+    url: "https://api.robinhood.com/user/",
+    basic_info: "https://api.robinhood.com/user/basic_info/",
+    email: "felipe.lima@gmail.com",
+    investment_profile: "https://api.robinhood.com/user/investment_profile/",
+    id: "ff2f0446-db82-488f-a911-9c777c604f7e",
+    international_info: "https://api.robinhood.com/user/international_info/",
+    employment: "https://api.robinhood.com/user/employment/",
+    additional_info: "https://api.robinhood.com/user/additional_info/"
+  });
 });
 
 server.get('/accounts', function (req, res) {
   var options = {
     url: 'https://api.robinhood.com/accounts/',
+    method: 'GET',
+    headers: {
+      "Authorization": "Token " + req.query.token
+    }
+  };
+  proxyRequest(options, res);
+});
+
+server.get('/accounts/:account_id', function (req, res) {
+  var options = {
+    url: 'https://api.robinhood.com/accounts/' + req.params.account_id,
+    method: 'GET',
+    headers: {
+      "Authorization": "Token " + req.query.token
+    }
+  };
+  proxyRequest(options, res);
+});
+
+server.get('/accounts/:account_id/portfolio', function (req, res) {
+  var options = {
+    url: 'https://api.robinhood.com/accounts/' + req.params.account_id + '/portfolio',
     method: 'GET',
     headers: {
       "Authorization": "Token " + req.query.token
