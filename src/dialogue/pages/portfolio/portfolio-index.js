@@ -7,24 +7,30 @@ const Portfolio = (sources) => {
   const model$ = model(sources.HTTP, state$)
   const view$ = view(model$)
   const request$ = model$.take(1)
-  .flatMap(({token}) => [
-    ({
+    .flatMap(({token}) => [({
       method: 'GET',
       eager: true,
       url: '/user?token=' + token,
       category: 'user',
-    }),
-    ({
+    }),({
       method: 'GET',
       eager: true,
       url: '/accounts?token=' + token,
       category: 'account',
     })
   ])
+  const portfolio$ = model$.filter(m => m.account !== undefined)
+    .take(1)
+    .flatMap(({account, token}) => Observable.just(({
+      method: 'GET',
+      eager: true,
+      url: `/accounts/${account.account_number}/portfolio?token=` + token,
+      category: 'portfolio',
+    })))
 
   return {
     DOM: view$,
-    HTTP: request$,
+    HTTP: Observable.merge(request$, portfolio$),
     state$: model$
   }
 }

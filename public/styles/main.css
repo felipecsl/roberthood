@@ -12,3 +12,11 @@ body {
   font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   color: #333;
 }
+
+.invisible {
+  display: none;
+}
+
+.visible {
+  display: block;
+}

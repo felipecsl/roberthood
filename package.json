@@ -41,6 +41,7 @@
     "@cycle/dom": "^9.0.2",
     "@cycle/http": "^8.2.0",
     "@cycle/isolate": "^1.2.0",
+    "accounting": "^0.4.1",
     "cyclic-history": "^0.1.0",
     "cyclic-router": "^0.3.0",
     "ejs": "^2.4.1",

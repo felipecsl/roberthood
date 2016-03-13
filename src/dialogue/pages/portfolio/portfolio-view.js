@@ -1,12 +1,22 @@
-import {div, p} from '@cycle/dom'
+import {div, p, h, h1} from '@cycle/dom'
+import {formatMoney} from 'accounting'
 
 const view = state$ => {
-  return state$.map(({user}) => {
+  return state$.map(s => {
+    const portfolioPresent = s.portfolio !== undefined
+    if (!portfolioPresent) {
+      return h1('Loading...')
+    }
     return div([
-      p([`Username: ${user.username}`]),
-      p([`First Name: ${user.first_name}`]),
-      p([`Last Name: ${user.last_name}`]),
-      p([`Email: ${user.email}`])
+      div(`${portfolioPresent ? '.visible' : '.invisible'}`, [
+        div([
+          h('paper-card', { heading: 'Portfolio' }, [
+            h('.card-content', [
+              h1(formatMoney(s.portfolio.last_core_equity))
+            ])
+          ])
+        ])
+      ])
     ])
   })
 }
