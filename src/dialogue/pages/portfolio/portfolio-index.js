@@ -21,12 +21,17 @@ const Portfolio = (sources) => {
   ])
   const portfolio$ = model$.filter(m => m.account !== undefined)
     .take(1)
-    .flatMap(({account, token}) => Observable.just(({
+    .flatMap(({account, token}) => Observable.from([({
       method: 'GET',
       eager: true,
       url: `/accounts/${account.account_number}/portfolio?token=` + token,
       category: 'portfolio',
-    })))
+    }), ({
+      method: 'GET',
+      eager: true,
+      url: `/positions/${account.account_number}?token=` + token,
+      category: 'positions',
+    })]))
 
   return {
     DOM: view$,

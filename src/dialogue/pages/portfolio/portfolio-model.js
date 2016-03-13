@@ -19,7 +19,14 @@ const portfolioModel = (request$, state$) => {
         state.portfolio = res.body
         return state
       }))
-  return Observable.merge(state$.take(1), user$, accounts$, portfolio$)
+  const positions$ = request$.flatMap(x => x)
+      .filter(res$ => res$.request.category === 'positions')
+      .flatMap(res => state$.take(1).map((state) => {
+        state.positions = res.body.results
+        return state
+      }))
+  return Observable.merge(
+    state$.take(1), user$, accounts$, portfolio$, positions$)
 }
 
 export default portfolioModel

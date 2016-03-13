@@ -96,7 +96,8 @@ server.get('/accounts/:account_id', function (req, res) {
 
 server.get('/accounts/:account_id/portfolio', function (req, res) {
   var options = {
-    url: 'https://api.robinhood.com/accounts/' + req.params.account_id + '/portfolio',
+    url: 'https://api.robinhood.com/accounts/' +
+      req.params.account_id + '/portfolio',
     method: 'GET',
     headers: {
       "Authorization": "Token " + req.query.token
@@ -114,6 +115,32 @@ server.post('/auth', function (req, res) {
   // proxyRequest(options, res);
   res.header("Content-Type", "application/json");
   res.send("{\"token\":\"264da708857c7c02af6eeca0f6f2bc42e179589a\"}");
+});
+
+server.get('/positions/:account_id', function (req, res) {
+  var options = {
+    url: 'https://api.robinhood.com/positions/',
+    method: 'GET',
+    qs: {
+      nonzero: true,
+      account: '/accounts/' + req.params.account_id + '/'
+    },
+    headers: {
+      "Authorization": "Token " + req.query.token
+    }
+  };
+  proxyRequest(options, res);
+});
+
+server.get('/instruments/:instrument_id', function(req, res) {
+  var options = {
+    url: 'https://api.robinhood.com/instruments/' + req.params.instrument_id,
+    method: 'GET',
+    headers: {
+      "Authorization": "Token " + req.query.token
+    }
+  };
+  proxyRequest(options, res);
 });
 
 var port = process.env.PORT || 3000
