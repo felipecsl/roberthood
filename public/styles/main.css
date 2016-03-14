@@ -28,3 +28,15 @@ body {
 .right {
   float: right;
 }
+
+.center {
+  text-align: center;
+}
+
+.quote-up {
+  color: #00cf98;
+}
+
+.quote-down {
+  color: red;
+}
