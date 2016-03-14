@@ -1,11 +1,11 @@
 import {Observable} from 'rx'
 
-const homeModel = (response$) => {
-  return response$
+const homeModel = (sources) => {
+  return Observable.merge(sources.state$.take(1), sources.HTTP
       .flatMap(x => x)
       .map(res => res.body)
       .share()
-      .startWith({})
+      .doOnNext(({token}) => window.localStorage.setItem("token", token)))
 }
 
 export default homeModel

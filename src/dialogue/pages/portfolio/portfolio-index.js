@@ -6,16 +6,17 @@ const Portfolio = (sources) => {
   const state$ = sources.state$
   const model$ = model(sources.HTTP, state$)
   const view$ = view(model$)
-  const request$ = model$.take(1)
+  const request$ = model$.filter(m => m.token !== undefined)
+    .take(1)
     .flatMap(({token}) => [({
       method: 'GET',
       eager: true,
-      url: '/user?token=' + token,
+      url: `/user?token=${token}`,
       category: 'user',
     }),({
       method: 'GET',
       eager: true,
-      url: '/accounts?token=' + token,
+      url: `/accounts?token=${token}`,
       category: 'account',
     })
   ])
@@ -24,18 +25,27 @@ const Portfolio = (sources) => {
     .flatMap(({account, token}) => Observable.from([({
       method: 'GET',
       eager: true,
-      url: `/accounts/${account.account_number}/portfolio?token=` + token,
+      url: `/accounts/${account.account_number}/portfolio?token=${token}`,
       category: 'portfolio',
     }), ({
       method: 'GET',
       eager: true,
-      url: `/positions/${account.account_number}?token=` + token,
+      url: `/positions/${account.account_number}?token=${token}`,
       category: 'positions',
     })]))
+  const instrument$ = model$.filter(m => m.positions !== undefined)
+    .take(1)
+    .flatMap(({positions, token}) => positions.map(position => ({
+      method: 'GET',
+      eager: true,
+      url: `/instruments/${position.instrumentId}?token=${token}`,
+      instrumentId: position.instrumentId,
+      category: 'instruments',
+    })))
 
   return {
     DOM: view$,
-    HTTP: Observable.merge(request$, portfolio$),
+    HTTP: Observable.merge(request$, portfolio$, instrument$),
     state$: model$
   }
 }

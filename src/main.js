@@ -12,11 +12,16 @@ import {div, h1} from '@cycle/dom'
 function main(sources) {
   const Content = ContentRouter(sources)
   const {path$, state$} = Content
+  let savedToken = window.localStorage.getItem("token")
+
+  if (savedToken === 'undefined') {
+    savedToken = undefined
+  }
 
   return {
     DOM: Content.DOM,
     HTTP: Content.HTTP,
-    state$: state$.startWith({user: ({})})
+    state$: state$.startWith({user: ({}), token: savedToken})
   }
 }
 

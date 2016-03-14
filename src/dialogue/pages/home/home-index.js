@@ -6,7 +6,7 @@ import {Observable, ReplaySubject} from 'rx'
 const Home = (sources) => {
   const {state$} = sources
   const actions = intent(sources)
-  const token$ = model(sources.HTTP)
+  const token$ = model(sources)
   const request$ = actions.map(data => ({
     url: '/auth',
     method: 'POST',
