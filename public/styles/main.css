@@ -20,3 +20,11 @@ body {
 .visible {
   display: block;
 }
+
+.portfolio-items {
+  width: 300px;
+}
+
+.right {
+  float: right;
+}

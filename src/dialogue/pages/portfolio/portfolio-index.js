@@ -33,7 +33,7 @@ const Portfolio = (sources) => {
       url: `/positions/${account.account_number}?token=${token}`,
       category: 'positions',
     })]))
-  const instrument$ = model$.filter(m => m.positions !== undefined)
+  const instruments$ = model$.filter(m => m.positions !== undefined)
     .take(1)
     .flatMap(({positions, token}) => positions.map(position => ({
       method: 'GET',
@@ -42,10 +42,19 @@ const Portfolio = (sources) => {
       instrumentId: position.instrumentId,
       category: 'instruments',
     })))
+  const quotes$ = model$.filter(m => m.positions !== undefined)
+    .filter(m => m.positions.every(p => p.instrument.symbol !== undefined))
+    .take(1)
+    .flatMap(({positions, token}) => Observable.just({
+      method: 'GET',
+      eager: true,
+      url: `/quotes?symbols=${positions.map(p => p.instrument.symbol).join(',')}&token=${token}`,
+      category: 'quotes',
+    }))
 
   return {
     DOM: view$,
-    HTTP: Observable.merge(request$, portfolio$, instrument$),
+    HTTP: Observable.merge(request$, portfolio$, instruments$, quotes$),
     state$: model$
   }
 }

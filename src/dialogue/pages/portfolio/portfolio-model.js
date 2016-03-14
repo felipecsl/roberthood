@@ -47,8 +47,19 @@ const portfolioModel = (request$, state$) => {
         position[0].instrument = res.body
         return state
       }))
+  const quotes$ = request$.flatMap(x => x)
+      .filter(res => res.request.category === 'quotes')
+      .map(res => res.body.results)
+      .flatMap(res => state$.take(1).map((state) => {
+        res.forEach(quote => {
+          let position = state.positions
+            .filter(p => p.instrument.symbol === quote.symbol)
+          position[0].instrument.quote = quote
+        })
+        return state
+      }))
   return Observable.merge(
-    state$.take(1), user$, accounts$, portfolio$, positions$, instruments$)
+    state$.take(1), user$, accounts$, portfolio$, positions$, instruments$, quotes$)
 }
 
 export default portfolioModel
