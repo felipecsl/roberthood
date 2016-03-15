@@ -14,7 +14,7 @@ function main(sources) {
   const {path$, state$} = Content
   let savedToken = window.localStorage.getItem("token")
 
-  if (savedToken === 'undefined') {
+  if (savedToken === 'undefined' || savedToken === null) {
     savedToken = undefined
   }
 

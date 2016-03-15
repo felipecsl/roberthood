@@ -51,22 +51,7 @@ server.get('/user', function (req, res) {
       "Authorization": "Token " + req.query.token
     }
   };
-  // proxyRequest(options, res);
-  res.header("Content-Type", "application/json");
-  res.send({
-    username: "felipecsl",
-    first_name: "Felipe",
-    last_name: "Lima",
-    id_info: "https://api.robinhood.com/user/id/",
-    url: "https://api.robinhood.com/user/",
-    basic_info: "https://api.robinhood.com/user/basic_info/",
-    email: "felipe.lima@gmail.com",
-    investment_profile: "https://api.robinhood.com/user/investment_profile/",
-    id: "ff2f0446-db82-488f-a911-9c777c604f7e",
-    international_info: "https://api.robinhood.com/user/international_info/",
-    employment: "https://api.robinhood.com/user/employment/",
-    additional_info: "https://api.robinhood.com/user/additional_info/"
-  });
+  proxyRequest(options, res);
 });
 
 server.get('/accounts', function (req, res) {
@@ -109,9 +94,7 @@ server.post('/auth', function (req, res) {
     form: req.body,
     method: 'POST'
   };
-  // proxyRequest(options, res);
-  res.header("Content-Type", "application/json");
-  res.send("{\"token\":\"264da708857c7c02af6eeca0f6f2bc42e179589a\"}");
+  proxyRequest(options, res);
 });
 
 server.get('/positions/:account_id', function (req, res) {
