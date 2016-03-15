@@ -14,7 +14,7 @@
     "prod:server": "node build/server.js",
     "prod:build": "babel -d build server.js",
     "start": "npm-run-all build --parallel watch server",
-    "prod": "npm-run-all prod:build prod:server"
+    "postinstall": "bower install && npm prod:build"
   },
   "devDependencies": {
     "exorcist": "^0.4.0",
