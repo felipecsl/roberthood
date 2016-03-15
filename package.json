@@ -12,9 +12,8 @@
     "watch": "watchify -d -e src/app.js -t babelify -o public/javascripts/bundle.js -v",
     "server": "babel-node ./server.js",
     "prod:server": "node build/server.js",
-    "prod:build": "babel -d build server.js",
     "start": "npm-run-all build --parallel watch server",
-    "postinstall": "bower install && npm prod:build"
+    "postinstall": "bower install && babel -d build server.js"
   },
   "devDependencies": {
     "exorcist": "^0.4.0",
