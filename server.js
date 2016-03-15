@@ -1,4 +1,3 @@
-let livereload = require('express-livereload')
 let fs = require("fs");
 let browserify = require("browserify");
 let babelify = require("babelify");
@@ -7,8 +6,6 @@ let bodyParser = require('body-parser');
 let path = require('path');
 let request = require('request');
 let server = express();
-
-livereload(server, {})
 
 browserify({ debug: true })
   .transform(babelify)
