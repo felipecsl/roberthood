@@ -154,6 +154,7 @@ server.get('/quotes', function (req, res) {
 });
 
 var port = process.env.PORT || 3000
+
 server.listen(port, function () {
   console.log('App listening on port ' + port);
 });
