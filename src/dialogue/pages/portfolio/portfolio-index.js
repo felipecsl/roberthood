@@ -1,6 +1,7 @@
 import {Observable} from 'rx'
 import view from './portfolio-view'
 import model from './portfolio-model'
+import helpers from './helpers'
 
 const Portfolio = (sources) => {
   const state$ = sources.state$
@@ -30,11 +31,6 @@ const Portfolio = (sources) => {
     }), ({
       method: 'GET',
       eager: true,
-      url: `/portfolios/historicals/${account.account_number}?token=${token}`,
-      category: 'historicals',
-    }), ({
-      method: 'GET',
-      eager: true,
       url: `/positions/${account.account_number}?token=${token}`,
       category: 'positions',
     })]))
@@ -56,15 +52,25 @@ const Portfolio = (sources) => {
       url: `/quotes?symbols=${positions.map(p => p.instrument.symbol).join(',')}&token=${token}`,
       category: 'quotes',
     }))
-  const historicals$ = model$.filter(m => m.historicals !== undefined)
+  // this needs to happen after the UI finished loading completely
+  const historicals$ = model$.filter(m => helpers.isFullyLoaded(m))
+    .take(1)
+    .flatMap(({account, token}) => Observable.just({
+      method: 'GET',
+      eager: true,
+      url: `/portfolios/historicals/${account.account_number}?token=${token}`,
+      category: 'historicals',
+    }))
+  const historicalsData$ = model$.filter(m => m.historicals !== undefined)
     .take(1)
     .map(state => state.historicals)
 
   return {
     DOM: view$,
-    HTTP: Observable.merge(request$, portfolio$, instruments$, quotes$),
+    HTTP: Observable.merge(
+      request$, portfolio$, instruments$, quotes$, historicals$),
     state$: model$,
-    historicalData: historicals$
+    historicalData: historicalsData$
   }
 }
 

@@ -10,43 +10,40 @@ import Main from './main'
 import Pol from './polymer'
 import d3 from 'd3'
 
-
 function makeHistoricalDataDriver() {
   return function historicalDataDriver(sink$) {
     sink$.subscribe(h => {
-      setTimeout(() => {
-        const data = h.map(d => [d.adjusted_open_equity, d.adjusted_close_equity])
-          .reduce((a, b) => a.concat(b), [])
-          .map(d => parseFloat(d))
-        const margin = {top: 0, right: 0, bottom: 0, left: 0},
-            width = 480 - margin.left - margin.right,
-            height = 250 - margin.top - margin.bottom
-        const x = d3.scale.linear()
-            .domain([0, data.length])
-            .range([0, width])
-        const y = d3.scale.linear()
-            .domain([Math.min(...data), Math.max(...data)])
-            .range([height, 0])
-        const xAxis = d3.svg.axis()
-            .scale(x)
-            .orient("bottom")
-        const yAxis = d3.svg.axis()
-            .scale(y)
-            .orient("left")
-        const line = d3.svg.line()
-            .x((d, i) => x(i))
-            .y(d => y(d))
-        const svg = d3.select('.chart-placeholder')
-            .append("svg")
-            .attr('class', 'chart')
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
-          .append("g")
-            .attr("transform", `translate(${margin.left},${margin.top})`)
-        svg.append('path')
-            .attr("class", "line")
-            .attr("d", line(data))
-      }, 2000)
+      const data = h.map(d => [d.adjusted_open_equity, d.adjusted_close_equity])
+        .reduce((a, b) => a.concat(b), [])
+        .map(d => parseFloat(d))
+      const margin = {top: 0, right: 0, bottom: 0, left: 0},
+          width = 480 - margin.left - margin.right,
+          height = 250 - margin.top - margin.bottom
+      const x = d3.scale.linear()
+          .domain([0, data.length])
+          .range([0, width])
+      const y = d3.scale.linear()
+          .domain([Math.min(...data), Math.max(...data)])
+          .range([height, 0])
+      const xAxis = d3.svg.axis()
+          .scale(x)
+          .orient("bottom")
+      const yAxis = d3.svg.axis()
+          .scale(y)
+          .orient("left")
+      const line = d3.svg.line()
+          .x((d, i) => x(i))
+          .y(d => y(d))
+      const svg = d3.select('.chart-placeholder')
+          .append("svg")
+          .attr('class', 'chart')
+          .attr("width", width + margin.left + margin.right)
+          .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+          .attr("transform", `translate(${margin.left},${margin.top})`)
+      svg.append('path')
+          .attr("class", "line")
+          .attr("d", line(data))
     })
     return Observable.empty()
   }
