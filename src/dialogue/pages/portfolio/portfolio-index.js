@@ -30,6 +30,11 @@ const Portfolio = (sources) => {
     }), ({
       method: 'GET',
       eager: true,
+      url: `/portfolios/historicals/${account.account_number}?token=${token}`,
+      category: 'historicals',
+    }), ({
+      method: 'GET',
+      eager: true,
       url: `/positions/${account.account_number}?token=${token}`,
       category: 'positions',
     })]))
@@ -51,11 +56,15 @@ const Portfolio = (sources) => {
       url: `/quotes?symbols=${positions.map(p => p.instrument.symbol).join(',')}&token=${token}`,
       category: 'quotes',
     }))
+  const historicals$ = model$.filter(m => m.historicals !== undefined)
+    .take(1)
+    .map(state => state.historicals)
 
   return {
     DOM: view$,
     HTTP: Observable.merge(request$, portfolio$, instruments$, quotes$),
-    state$: model$
+    state$: model$,
+    historicalData: historicals$
   }
 }
 

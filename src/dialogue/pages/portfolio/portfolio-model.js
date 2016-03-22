@@ -28,6 +28,13 @@ const portfolioModel = (request$, state$) => {
         state.portfolio = res
         return state
       }))
+  const historicals$ = request$.flatMap(x => x)
+      .filter(res => res.request.category === 'historicals')
+      .map(res => res.body.equity_historicals)
+      .flatMap(res => state$.take(1).map((state) => {
+        state.historicals = res
+        return state
+      }))
   const positions$ = request$.flatMap(x => x)
       .filter(res => res.request.category === 'positions')
       .map(res => res.body.results)
@@ -58,8 +65,8 @@ const portfolioModel = (request$, state$) => {
         })
         return state
       }))
-  return Observable.merge(
-    state$.take(1), user$, accounts$, portfolio$, positions$, instruments$, quotes$)
+  return Observable.merge(state$.take(1), user$, accounts$, portfolio$,
+    historicals$, positions$, instruments$, quotes$)
 }
 
 export default portfolioModel

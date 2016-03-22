@@ -19,6 +19,7 @@ const Home = (sources) => {
     DOM: view(sources, token$),
     HTTP: request$,
     state$: token$,
+    historicalData: sources.historicalData
   }
 }
 

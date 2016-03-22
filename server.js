@@ -88,6 +88,22 @@ server.get('/accounts/:account_id/portfolio', function (req, res) {
   proxyRequest(options, res);
 });
 
+server.get('/portfolios/historicals/:account_id', function (req, res) {
+  var options = {
+    url: 'https://api.robinhood.com/portfolios/historicals/' +
+      req.params.account_id,
+    method: 'GET',
+    qs: {
+      interval: '5minute',
+      span: 'day'
+    },
+    headers: {
+      "Authorization": "Token " + req.query.token
+    }
+  };
+  proxyRequest(options, res)
+});
+
 server.post('/auth', function (req, res) {
   var options = {
     url: 'https://api.robinhood.com/api-token-auth/',

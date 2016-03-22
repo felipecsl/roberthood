@@ -21,7 +21,8 @@ function main(sources) {
   return {
     DOM: Content.DOM,
     HTTP: Content.HTTP,
-    state$: state$.startWith({user: ({}), token: savedToken})
+    state$: state$.startWith({user: ({}), token: savedToken}),
+    historicalData: Content.historicalData
   }
 }
 

@@ -22,6 +22,7 @@ function ContentRouter(sources) {
         DOM: comp.DOM,
         HTTP: comp.HTTP,
         state$: comp.state$,
+        historicalData: comp.historicalData,
       }
     }
   )
@@ -29,6 +30,7 @@ function ContentRouter(sources) {
   return {
     DOM: childrenDOM$.flatMapLatest(s => s.DOM),
     HTTP: childrenDOM$.flatMapLatest(s => s.HTTP),
+    historicalData: childrenDOM$.flatMapLatest(s => s.historicalData),
     state$: childrenDOM$.flatMapLatest(s => s.state$),
     path$: path$,
   }

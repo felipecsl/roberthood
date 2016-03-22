@@ -22,7 +22,7 @@ body {
 }
 
 .portfolio-items {
-  width: 300px;
+  min-width: 300px;
 }
 
 .right {
@@ -39,4 +39,22 @@ body {
 
 .quote-down {
   color: red;
+}
+
+/* SVG styles below */
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.x.axis path {
+  display: none;
+}
+
+.line {
+  fill: none;
+  stroke: #00cf98;
+  stroke-width: 2.5px;
 }
