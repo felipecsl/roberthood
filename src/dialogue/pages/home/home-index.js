@@ -12,7 +12,7 @@ const Home = (sources) => {
     method: 'POST',
     eager: true,
     type: 'application/x-www-form-urlencoded',
-    send: Object.keys(data).map(k => k + '=' + data[k]).join('&')
+    send: Object.keys(data).map(k => k + '=' + encodeURIComponent(data[k])).join('&')
   }))
 
   return {

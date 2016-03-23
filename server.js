@@ -34,6 +34,7 @@ function proxyRequest(options, res) {
     if (!error && response.statusCode == 200) {
       res.status(response.statusCode).send(body);
     } else {
+      console.log("Request error: " + body)
       res.status(response.statusCode).send(error);
     }
   });
