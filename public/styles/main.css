@@ -35,10 +35,12 @@ body {
 
 .quote-up {
   color: #00cf98;
+  stroke: #00cf98;
 }
 
 .quote-down {
   color: red;
+  stroke: red;
 }
 
 /* SVG styles below */
@@ -55,6 +57,12 @@ body {
 
 .line {
   fill: none;
-  stroke: #00cf98;
-  stroke-width: 2.5px;
+  stroke-width: 2px;
+}
+
+.reference {
+  fill: none;
+  stroke: #000;
+  stroke-width: 0.5px;
+  stroke-dasharray: 1,1;
 }

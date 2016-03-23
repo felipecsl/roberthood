@@ -34,6 +34,8 @@ const historicals$ = (request$, state$) => filterByCategory(request$, 'historica
   .map(res => res.body.equity_historicals)
   .flatMap(res => state$.take(1).map((state) => {
     state.historicals = res
+    state.historicals.adjusted_equity_previous_close =
+      state.portfolio.adjusted_equity_previous_close
     return state
   }))
 

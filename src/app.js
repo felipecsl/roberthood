@@ -13,9 +13,11 @@ import d3 from 'd3'
 function makeHistoricalDataDriver() {
   return function historicalDataDriver(sink$) {
     sink$.subscribe(h => {
+      const prev_close = parseFloat(h.adjusted_equity_previous_close)
       const data = h.map(d => [d.adjusted_open_equity, d.adjusted_close_equity])
         .reduce((a, b) => a.concat(b), [])
         .map(d => parseFloat(d))
+      const klass = data[data.length - 1] > prev_close ? 'quote-up' : 'quote-down'
       const margin = {top: 0, right: 0, bottom: 0, left: 0},
           width = 480 - margin.left - margin.right,
           height = 250 - margin.top - margin.bottom
@@ -34,6 +36,9 @@ function makeHistoricalDataDriver() {
       const line = d3.svg.line()
           .x((d, i) => x(i))
           .y(d => y(d))
+      const horizLine = d3.svg.line()
+          .x((d, i) => x(i * (data.length - 1)))
+          .y(d => y(d))
       const svg = d3.select('.chart-placeholder')
           .append("svg")
           .attr('class', 'chart')
@@ -42,7 +47,10 @@ function makeHistoricalDataDriver() {
         .append("g")
           .attr("transform", `translate(${margin.left},${margin.top})`)
       svg.append('path')
-          .attr("class", "line")
+            .attr("class", "reference")
+			      .attr('d', horizLine([prev_close, prev_close]))
+      svg.append('path')
+          .attr("class", `line ${klass}`)
           .attr("d", line(data))
     })
     return Observable.empty()
