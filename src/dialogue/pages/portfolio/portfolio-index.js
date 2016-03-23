@@ -21,7 +21,6 @@ const Portfolio = (sources) => {
     .take(1).flatMap(requests.historicals$)
   const historicalsData$ = model$.filter(m => m.historicals !== undefined)
     .take(1).map(state => state.historicals)
-
   return {
     DOM: view$,
     HTTP: Observable.merge(

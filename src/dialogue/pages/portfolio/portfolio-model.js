@@ -6,37 +6,37 @@ function instrumentIdFromPosition(position) {
     .replace("/", "")
 }
 
+function filterRequestByCategory(request$, category) {
+  return request$.flatMap(x => x)
+    .filter(res => res.request.category === category)
+}
+
 const portfolioModel = (request$, state$) => {
-  const user$ = request$.flatMap(x => x)
-      .filter(res => res.request.category === 'user')
+  const user$ = filterRequestByCategory(request$, 'user')
       .map(res => res.body)
       .flatMap(res => state$.take(1).map((state) => {
         state.user = res
         return state
       }))
-  const accounts$ = request$.flatMap(x => x)
-      .filter(res => res.request.category === 'account')
+  const accounts$ = filterRequestByCategory(request$, 'account')
       .map(res => res.body.results[0])
       .flatMap(res => state$.take(1).map((state) => {
         state.account = res
         return state
       }))
-  const portfolio$ = request$.flatMap(x => x)
-      .filter(res => res.request.category === 'portfolio')
+  const portfolio$ = filterRequestByCategory(request$, 'portfolio')
       .map(res => res.body)
       .flatMap(res => state$.take(1).map((state) => {
         state.portfolio = res
         return state
       }))
-  const historicals$ = request$.flatMap(x => x)
-      .filter(res => res.request.category === 'historicals')
+  const historicals$ = filterRequestByCategory(request$, 'historicals')
       .map(res => res.body.equity_historicals)
       .flatMap(res => state$.take(1).map((state) => {
         state.historicals = res
         return state
       }))
-  const positions$ = request$.flatMap(x => x)
-      .filter(res => res.request.category === 'positions')
+  const positions$ = filterRequestByCategory(request$, 'positions')
       .map(res => res.body.results)
       .map(results => results.map(pos => {
         pos.instrumentId = instrumentIdFromPosition(pos)
@@ -46,16 +46,14 @@ const portfolioModel = (request$, state$) => {
         state.positions = res
         return state
       }))
-  const instruments$ = request$.flatMap(x => x)
-      .filter(res => res.request.category === 'instruments')
+  const instruments$ = filterRequestByCategory(request$, 'instruments')
       .flatMap(res => state$.take(1).map((state) => {
         let position = state.positions
           .filter(p => p.instrumentId === res.request.instrumentId)
         position[0].instrument = res.body
         return state
       }))
-  const quotes$ = request$.flatMap(x => x)
-      .filter(res => res.request.category === 'quotes')
+  const quotes$ = filterRequestByCategory(request$, 'quotes')
       .map(res => res.body.results)
       .flatMap(res => state$.take(1).map((state) => {
         res.forEach(quote => {
