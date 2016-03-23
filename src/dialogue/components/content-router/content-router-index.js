@@ -27,6 +27,7 @@ function ContentRouter(sources) {
     }
   )
 
+
   return {
     DOM: childrenDOM$.flatMapLatest(s => s.DOM),
     HTTP: childrenDOM$.flatMapLatest(s => s.HTTP),
