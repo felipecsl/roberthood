@@ -95,8 +95,8 @@ server.get('/portfolios/historicals/:account_id', function (req, res) {
       req.params.account_id,
     method: 'GET',
     qs: {
-      interval: '5minute',
-      span: 'day'
+      interval: req.query.interval,
+      span: req.query.span
     },
     headers: {
       "Authorization": "Token " + req.query.token

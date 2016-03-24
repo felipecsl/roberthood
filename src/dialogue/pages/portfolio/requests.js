@@ -49,7 +49,7 @@ const quotes$ = ({positions, token}) => Observable.just({
 const historicals$ = ({account, token}) => Observable.just({
   method: 'GET',
   eager: true,
-  url: `/portfolios/historicals/${account.account_number}?token=${token}`,
+  url: `/portfolios/historicals/${account.account_number}?interval=5minute&span=day&token=${token}`,
   category: 'historicals',
 })
 

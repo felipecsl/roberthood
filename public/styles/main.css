@@ -33,6 +33,10 @@ body {
   text-align: center;
 }
 
+h1.equity {
+  margin: 0;
+}
+
 .quote-up {
   color: #00cf98;
   stroke: #00cf98;

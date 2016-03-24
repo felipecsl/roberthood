@@ -1,5 +1,5 @@
 import {div, p, h, h1, ul, li} from '@cycle/dom'
-import {formatMoney} from 'accounting'
+import {formatMoney, toFixed} from 'accounting'
 import helpers from './helpers'
 
 const view = state$ => {
@@ -7,12 +7,19 @@ const view = state$ => {
     if (!helpers.isFullyLoaded(s)) {
       return h('paper-spinner-lite', { className: 'green', attributes: { active: '' }})
     }
+    const absChange = s.portfolio.last_core_equity - s.portfolio.adjusted_equity_previous_close
+    const percentChange = (absChange / s.portfolio.last_core_equity) * 100
+    const equityClass = helpers.equityClass(s.portfolio)
+
     return div([
       div([
         div([
           h('paper-card', { heading: 'Portfolio' }, [
             h('.card-content', [
-              h1(`.center .${helpers.equityClass(s.portfolio)}`, formatMoney(s.portfolio.last_core_equity)),
+              h1(`.center.equity .${equityClass}`,
+                `${formatMoney(s.portfolio.last_core_equity)}`),
+              div('.center', [
+                h(`small.${equityClass}`, `${formatMoney(absChange)} (${toFixed(percentChange, 2)}%)`)]),
               div('.chart-placeholder'),
               div('.portfolio-items', { attributes: { role: 'listbox' }}, s.positions.map(position =>
                 h('paper-item', [
