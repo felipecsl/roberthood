@@ -17,16 +17,32 @@ const Portfolio = (sources) => {
   const quotes$ = model$.filter(m => m.positions !== undefined)
     .filter(m => m.positions.every(p => p.instrument.symbol !== undefined))
     .take(1).flatMap(requests.quotes$)
+  const quotesHistoricals$ = model$.filter(m => m.positions !== undefined)
+    .filter(m => m.positions.every(p => p.instrument.symbol !== undefined))
+    .take(1).flatMap(requests.quotesHistoricals$)
   const historicals$ = model$.filter(m => helpers.isFullyLoaded(m))
     .take(1).flatMap(requests.historicals$)
-  const historicalsData$ = model$.filter(m => m.historicals !== undefined)
-    .take(1).map(state => state.historicals)
+  const historicalsData$ = Observable.just(({
+      data$: model$.filter(m => m.historicals !== undefined)
+        .take(1).map(state => state.historicals),
+      selector: '.chart-placeholder',
+      width: 480,
+      height: 250
+    }))
+  const quoteHistoricalData$ = model$.filter(m => m.positions !== undefined)
+    .filter(m => m.positions.every(p => p.historicals !== undefined))
+    .take(1).flatMap(state => state.positions.map(p => ({
+      data$: Observable.just(p.historicals),
+      selector: `.quote-${p.instrument.symbol}-chart-placeholder`,
+      width: 120,
+      height: 40
+    })))
   return {
     DOM: view$,
-    HTTP: Observable.merge(
-      account$, portfolio$, instruments$, quotes$, historicals$),
+    HTTP: Observable.merge(account$, portfolio$, instruments$, quotes$,
+      quotesHistoricals$, historicals$),
     state$: model$,
-    historicalData: historicalsData$
+    historicalData: Observable.merge(historicalsData$, quoteHistoricalData$)
   }
 }
 

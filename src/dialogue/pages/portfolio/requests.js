@@ -46,6 +46,13 @@ const quotes$ = ({positions, token}) => Observable.just({
   category: 'quotes',
 })
 
+const quotesHistoricals$ = ({positions, token}) => positions.map(p => ({
+  method: 'GET',
+  eager: true,
+  url: `/quotes/historicals/${p.instrument.symbol}?interval=5minute&span=day&token=${token}`,
+  category: 'quoteHistorical',
+}))
+
 const historicals$ = ({account, token}) => Observable.just({
   method: 'GET',
   eager: true,
@@ -53,4 +60,5 @@ const historicals$ = ({account, token}) => Observable.just({
   category: 'historicals',
 })
 
-export default {account$, portfolio$, instruments$$, quotes$, historicals$}
+export default {account$, portfolio$, instruments$$, quotes$, historicals$,
+  quotesHistoricals$}

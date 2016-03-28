@@ -59,9 +59,18 @@ h1.equity {
   display: none;
 }
 
-.line {
+.chart-big .line {
   fill: none;
   stroke-width: 2px;
+}
+
+.chart-small {
+  margin-top: -40px;
+}
+
+.chart-small .line {
+  fill: none;
+  stroke-width: 1px;
 }
 
 .reference {

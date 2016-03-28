@@ -1,3 +1,4 @@
+import {toFixed} from 'accounting'
 
 const CLASS_QUOTE_UP = ".quote-up"
 const CLASS_QUOTE_DOWN = ".quote-down"
@@ -37,6 +38,14 @@ const helpers = {
         && i.quote !== undefined
         && i.quote.last_trade_price !== undefined)
   },
+
+  /**
+   * Returns a String percentage change for the provided quote
+   */
+  quotePercentChangeStr: (quote) => {
+    const absChange = quote.last_trade_price - quote.previous_close
+    return toFixed((absChange / quote.last_trade_price) * 100, 2)
+  }
 }
 
 export default helpers

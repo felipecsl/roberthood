@@ -20,7 +20,7 @@ const view = state$ => {
                 `${formatMoney(s.portfolio.last_core_equity)}`),
               div('.center', [
                 h(`small.${equityClass}`, `${formatMoney(absChange)} (${toFixed(percentChange, 2)}%)`)]),
-              div('.chart-placeholder'),
+              div('.chart-placeholder .chart-big'),
               div('.portfolio-items', { attributes: { role: 'listbox' }}, s.positions.map(position =>
                 h('paper-item', [
                   h('paper-item-body', { attributes: { 'two-line': '' }}, [
@@ -31,8 +31,11 @@ const view = state$ => {
                       ])
                     ]),
                     div({ attributes: { secondary: '' }}, [
-                      `${helpers.formatShares(position.quantity)} Shares`
-                    ])
+                      `${helpers.formatShares(position.quantity)} Shares`,
+                      h(`small .right .${helpers.quoteClass(position.instrument.quote)}`,
+                        `(${helpers.quotePercentChangeStr(position.instrument.quote)}%)`)
+                    ]),
+                    div(`.quote-${position.instrument.symbol}-chart-placeholder .center .chart-small`),
                   ])
                 ])
               ))

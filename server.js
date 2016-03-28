@@ -6,6 +6,8 @@ let bodyParser = require('body-parser');
 let path = require('path');
 let request = require('request');
 let server = express();
+let BASE_URL = 'https://api.robinhood.com';
+let port = process.env.PORT || 3000;
 
 browserify({ debug: true })
   .transform(babelify)
@@ -46,7 +48,7 @@ server.get('/', function (req, res) {
 
 server.get('/user', function (req, res) {
   var options = {
-    url: 'https://api.robinhood.com/user/',
+    url: BASE_URL + '/user/',
     method: 'GET',
     headers: {
       "Authorization": "Token " + req.query.token
@@ -57,7 +59,7 @@ server.get('/user', function (req, res) {
 
 server.get('/accounts', function (req, res) {
   var options = {
-    url: 'https://api.robinhood.com/accounts/',
+    url: BASE_URL + '/accounts/',
     method: 'GET',
     headers: {
       "Authorization": "Token " + req.query.token
@@ -68,7 +70,7 @@ server.get('/accounts', function (req, res) {
 
 server.get('/accounts/:account_id', function (req, res) {
   var options = {
-    url: 'https://api.robinhood.com/accounts/' + req.params.account_id,
+    url: BASE_URL + '/accounts/' + req.params.account_id,
     method: 'GET',
     headers: {
       "Authorization": "Token " + req.query.token
@@ -79,7 +81,7 @@ server.get('/accounts/:account_id', function (req, res) {
 
 server.get('/accounts/:account_id/portfolio', function (req, res) {
   var options = {
-    url: 'https://api.robinhood.com/accounts/' +
+    url: BASE_URL + '/accounts/' +
       req.params.account_id + '/portfolio',
     method: 'GET',
     headers: {
@@ -91,7 +93,7 @@ server.get('/accounts/:account_id/portfolio', function (req, res) {
 
 server.get('/portfolios/historicals/:account_id', function (req, res) {
   var options = {
-    url: 'https://api.robinhood.com/portfolios/historicals/' +
+    url: BASE_URL + '/portfolios/historicals/' +
       req.params.account_id,
     method: 'GET',
     qs: {
@@ -107,7 +109,7 @@ server.get('/portfolios/historicals/:account_id', function (req, res) {
 
 server.post('/auth', function (req, res) {
   var options = {
-    url: 'https://api.robinhood.com/api-token-auth/',
+    url: BASE_URL + '/api-token-auth/',
     form: req.body,
     method: 'POST'
   };
@@ -116,7 +118,7 @@ server.post('/auth', function (req, res) {
 
 server.get('/positions/:account_id', function (req, res) {
   var options = {
-    url: 'https://api.robinhood.com/positions/',
+    url: BASE_URL + '/positions/',
     method: 'GET',
     qs: {
       nonzero: true,
@@ -131,7 +133,7 @@ server.get('/positions/:account_id', function (req, res) {
 
 server.get('/instruments/:instrument_id', function(req, res) {
   var options = {
-    url: 'https://api.robinhood.com/instruments/' + req.params.instrument_id,
+    url: BASE_URL + '/instruments/' + req.params.instrument_id,
     method: 'GET',
     headers: {
       "Authorization": "Token " + req.query.token
@@ -142,7 +144,7 @@ server.get('/instruments/:instrument_id', function(req, res) {
 
 server.get('/quotes', function (req, res) {
   var options = {
-    url: 'https://api.robinhood.com/quotes/',
+    url: BASE_URL + '/quotes/',
     method: 'GET',
     qs: {
       symbols: req.query.symbols
@@ -154,7 +156,21 @@ server.get('/quotes', function (req, res) {
   proxyRequest(options, res);
 });
 
-var port = process.env.PORT || 3000
+server.get('/quotes/historicals/:instrument_id', function (req, res) {
+  var options = {
+    url: BASE_URL + '/quotes/historicals/' + req.params.instrument_id + '/',
+    method: 'GET',
+    qs: {
+      interval: req.query.interval,
+      span: req.query.span
+    },
+    headers: {
+      "Authorization": "Token " + req.query.token
+    }
+  };
+  proxyRequest(options, res);
+});
+
 server.listen(port, function () {
   console.log('App listening on port ' + port);
 });

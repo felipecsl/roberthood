@@ -69,5 +69,14 @@ const quotes$ = (request$, state$) => filterByCategory(request$, 'quotes')
     return state
   }))
 
+const quoteHistoricals$ = (request$, state$) => filterByCategory(request$, 'quoteHistorical')
+  .map(res => res.body)
+  .flatMap(res => state$.take(1).map((state) => {
+    let position = state.positions
+      .filter(p => p.instrument.symbol === res.symbol)
+    position[0].historicals = res.historicals
+    return state
+  }))
+
 export default {user$, accounts$, portfolio$, historicals$, positions$,
-  instruments$, quotes$}
+  instruments$, quotes$, quoteHistoricals$}
