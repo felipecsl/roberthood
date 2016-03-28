@@ -78,5 +78,5 @@ const quoteHistoricals$ = (request$, state$) => filterByCategory(request$, 'quot
     return state
   }))
 
-export default {user$, accounts$, portfolio$, historicals$, positions$,
-  instruments$, quotes$, quoteHistoricals$}
+export default {user$, accounts$, portfolio$, historicals$, positions$, instruments$, quotes$,
+  quoteHistoricals$}

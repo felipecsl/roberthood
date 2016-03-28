@@ -11,8 +11,8 @@ const portfolioModel = (request$, state$) => {
   const quotes$ = responses.quotes$(request$, state$)
   const quoteHistoricals$ = responses.quoteHistoricals$(request$, state$)
 
-  return Observable.merge(state$.take(1), user$, accounts$, portfolio$,
-    historicals$, positions$, instruments$, quotes$, quoteHistoricals$)
+  return Observable.merge(state$.take(1), user$, accounts$, portfolio$, historicals$, positions$,
+    instruments$, quotes$, quoteHistoricals$)
 }
 
 export default portfolioModel

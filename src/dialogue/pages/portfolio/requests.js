@@ -60,5 +60,4 @@ const historicals$ = ({account, token}) => Observable.just({
   category: 'historicals',
 })
 
-export default {account$, portfolio$, instruments$$, quotes$, historicals$,
-  quotesHistoricals$}
+export default {account$, portfolio$, instruments$$, quotes$, historicals$, quotesHistoricals$}

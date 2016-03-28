@@ -34,13 +34,14 @@ const Portfolio = (sources) => {
     .take(1).flatMap(state => state.positions.map(p => ({
       data$: Observable.just(p.historicals),
       selector: `.quote-${p.instrument.symbol}-chart-placeholder`,
+      prevClose: p.instrument.quote.previous_close,
       width: 120,
       height: 40
     })))
   return {
     DOM: view$,
-    HTTP: Observable.merge(account$, portfolio$, instruments$, quotes$,
-      quotesHistoricals$, historicals$),
+    HTTP: Observable.merge(account$, portfolio$, instruments$, quotes$, quotesHistoricals$,
+      historicals$),
     state$: model$,
     historicalData: Observable.merge(historicalsData$, quoteHistoricalData$)
   }

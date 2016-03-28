@@ -25,8 +25,8 @@ function makeHistoricalDataDriver() {
         } else {
           // Quote historicals
           // TODO: Find a way to get prevClose for Quotes
-          // prevClose = 0
-          data = h.map(d => [d.open_price, d.close_price])
+          prevClose = chartData.prevClose
+          data = h.map(d => (parseFloat(d.open_price) + parseFloat(d.close_price)) / 2)
             .reduce((a, b) => a.concat(b), [])
             .map(d => parseFloat(d))
         }
@@ -38,7 +38,7 @@ function makeHistoricalDataDriver() {
             .domain([0, data.length])
             .range([0, width])
         const y = d3.scale.linear()
-            .domain([Math.min(...data), Math.max(...data)])
+            .domain([Math.min(prevClose, Math.min(...data)), Math.max(prevClose, Math.max(...data))])
             .range([height, 0])
         const xAxis = d3.svg.axis()
             .scale(x)
