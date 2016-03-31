@@ -63,8 +63,8 @@ const quotes$ = (request$, state$) => filterByCategory(request$, 'quotes')
   .flatMap(res => state$.take(1).map((state) => {
     res.forEach(quote => {
       let position = state.positions
-        .filter(p => p.instrument.symbol === quote.symbol)
-      position[0].instrument.quote = quote
+        .find(p => p.instrument.symbol === quote.symbol)
+      position.instrument.quote = quote
     })
     return state
   }))
@@ -73,8 +73,8 @@ const quoteHistoricals$ = (request$, state$) => filterByCategory(request$, 'quot
   .map(res => res.body)
   .flatMap(res => state$.take(1).map((state) => {
     let position = state.positions
-      .filter(p => p.instrument.symbol === res.symbol)
-    position[0].historicals = res.historicals
+      .find(p => p.instrument.symbol === res.symbol)
+    position.historicals = res.historicals
     return state
   }))
 

@@ -1,7 +1,7 @@
 import {Observable} from 'rx'
 import view from './portfolio-view'
 import model from './portfolio-model'
-import helpers from './helpers'
+import helpers from '../../../helpers'
 import requests from './requests'
 
 const Portfolio = (sources) => {

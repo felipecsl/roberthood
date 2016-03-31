@@ -30,4 +30,5 @@ const view = (sources, state$) => {
     ])
   })
 }
+
 export default view

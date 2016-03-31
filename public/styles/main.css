@@ -84,3 +84,8 @@ a {
   color: inherit;
   text-decoration: none;
 }
+
+.chart-placeholder {
+  width: 480px;
+  height: 250px;
+}
