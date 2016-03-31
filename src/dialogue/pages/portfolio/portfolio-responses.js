@@ -1,4 +1,6 @@
-import helpers from '../../../helpers'function instrumentIdFromPosition(position) {
+import helpers from '../../../helpers'
+
+function instrumentIdFromPosition(position) {
   return position.instrument
     .replace("https://api.robinhood.com/instruments/", "")
     .replace("/", "")

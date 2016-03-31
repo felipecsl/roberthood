@@ -13,7 +13,6 @@ const portfolioModel = (request$, state$) => {
 
   return Observable.merge(state$.take(1), user$, accounts$, portfolio$, historicals$, positions$,
     instruments$, quotes$, quoteHistoricals$)
-      .doOnNext((state) => window.localStorage.setItem("state", JSON.stringify(state)))
 }
 
 export default portfolioModel
