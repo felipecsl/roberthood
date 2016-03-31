@@ -48,77 +48,71 @@
   <style is="custom-style" include="iron-flex iron-flex-alignment"></style>
   <title>Robert Hood</title>
 </head>
-<body unresolved>
-  <!-- build:remove -->
-  <span id="browser-sync-binding"></span>
-  <!-- endbuild -->
+<body unresolved id="app">
 
-  <template is="dom-bind" id="app">
+  <paper-drawer-panel id="paperDrawerPanel">
+    <!-- Drawer Scroll Header Panel -->
+    <paper-scroll-header-panel drawer fixed>
 
-    <paper-drawer-panel id="paperDrawerPanel">
-      <!-- Drawer Scroll Header Panel -->
-      <paper-scroll-header-panel drawer fixed>
+      <!-- Drawer Toolbar -->
+      <paper-toolbar id="drawerToolbar">
+        <span class="menu-name">Menu</span>
+      </paper-toolbar>
 
-        <!-- Drawer Toolbar -->
-        <paper-toolbar id="drawerToolbar">
-          <span class="menu-name">Menu</span>
-        </paper-toolbar>
+      <!-- Drawer Content -->
+      <paper-menu class="app-menu" attr-for-selected="data-route" selected="[[route]]">
+        <a data-route="home" href="{{baseUrl}}">
+          <iron-icon icon="account-balance"></iron-icon>
+          <span>Portfolio</span>
+        </a>
 
-        <!-- Drawer Content -->
-        <paper-menu class="app-menu" attr-for-selected="data-route" selected="[[route]]">
-          <a data-route="home" href="{{baseUrl}}">
-            <iron-icon icon="account-balance"></iron-icon>
-            <span>Portfolio</span>
-          </a>
+        <a data-route="users" href="{{baseUrl}}users">
+          <iron-icon icon="trending-up"></iron-icon>
+          <span>Account</span>
+        </a>
 
-          <a data-route="users" href="{{baseUrl}}users">
-            <iron-icon icon="trending-up"></iron-icon>
-            <span>Account</span>
-          </a>
+        <a data-route="contact" href="{{baseUrl}}contact">
+          <iron-icon icon="account-balance-wallet"></iron-icon>
+          <span>Order history</span>
+        </a>
+      </paper-menu>
+    </paper-scroll-header-panel>
 
-          <a data-route="contact" href="{{baseUrl}}contact">
-            <iron-icon icon="account-balance-wallet"></iron-icon>
-            <span>Order history</span>
-          </a>
-        </paper-menu>
-      </paper-scroll-header-panel>
+    <!-- Main Area -->
+    <paper-scroll-header-panel main id="headerPanelMain" condenses keep-condensed-header>
+      <!-- Main Toolbar -->
+      <paper-toolbar id="mainToolbar" class="tall">
+        <paper-icon-button id="paperToggle" icon="menu" paper-drawer-toggle></paper-icon-button>
 
-      <!-- Main Area -->
-      <paper-scroll-header-panel main id="headerPanelMain" condenses keep-condensed-header>
-        <!-- Main Toolbar -->
-        <paper-toolbar id="mainToolbar" class="tall">
-          <paper-icon-button id="paperToggle" icon="menu" paper-drawer-toggle></paper-icon-button>
+        <span class="space"></span>
 
-          <span class="space"></span>
+        <!-- Toolbar icons -->
+        <!-- <paper-icon-button icon="refresh"></paper-icon-button>
+        <paper-icon-button icon="search"></paper-icon-button> -->
 
-          <!-- Toolbar icons -->
-          <!-- <paper-icon-button icon="refresh"></paper-icon-button>
-          <paper-icon-button icon="search"></paper-icon-button> -->
-
-          <!-- Application name -->
-          <div class="middle middle-container">
-            <div class="app-name">Robert Hood</div>
-          </div>
-
-          <!-- Application sub title -->
-          <div class="bottom bottom-container">
-            <div class="bottom-title">Web interface</div>
-          </div>
-        </paper-toolbar>
-
-        <!-- Main Content -->
-        <div class="content">
-          <div class="layout horizontal center-justified">
-            <iron-pages>
-              <section data-route="home" tabindex="-1" class="iron-selected">
-                <div id="application"></div>
-              </section>
-            </iron-pages>
-          </div>
+        <!-- Application name -->
+        <div class="middle middle-container">
+          <div class="app-name">Robert Hood</div>
         </div>
-      </paper-scroll-header-panel>
-    </paper-drawer-panel>
-  </template>
+
+        <!-- Application sub title -->
+        <div class="bottom bottom-container">
+          <div class="bottom-title">Web interface</div>
+        </div>
+      </paper-toolbar>
+
+      <!-- Main Content -->
+      <div class="content">
+        <div class="layout horizontal center-justified">
+          <iron-pages>
+            <section data-route="home" tabindex="-1" class="iron-selected">
+              <div id="application"></div>
+            </section>
+          </iron-pages>
+        </div>
+      </div>
+    </paper-scroll-header-panel>
+  </paper-drawer-panel>
 
   <script src="/javascripts/bundle.js"></script>
   <a href="https://github.com/felipecsl/roberthood"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
