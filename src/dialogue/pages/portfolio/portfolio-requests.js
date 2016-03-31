@@ -62,16 +62,18 @@ const _historicals$ = ({account, token}) => Observable.just({
 })
 
 const requests = (model$) => {
-  const account$ = model$.filter(m => m.token !== undefined)
+  // This prevents us from requesting all over again when the state is already fully loaded
+  const notLoadedModel$ = model$.filter(m => !helpers.isFullyLoaded(m))
+  const account$ = notLoadedModel$.filter(m => m.token !== undefined)
     .take(1).flatMap(_account$)
-  const portfolio$ = model$.filter(m => m.account !== undefined)
+  const portfolio$ = notLoadedModel$.filter(m => m.account !== undefined)
     .take(1).flatMap(_portfolio$)
-  const instruments$ = model$.filter(m => m.positions !== undefined)
+  const instruments$ = notLoadedModel$.filter(m => m.positions !== undefined)
     .take(1).flatMap(_instruments$$)
-  const quotes$ = model$.filter(m => m.positions !== undefined)
+  const quotes$ = notLoadedModel$.filter(m => m.positions !== undefined)
     .filter(m => m.positions.every(p => p.instrument.symbol !== undefined))
     .take(1).flatMap(_quotes$)
-  const quotesHistoricals$ = model$.filter(m => m.positions !== undefined)
+  const quotesHistoricals$ = notLoadedModel$.filter(m => m.positions !== undefined)
     .filter(m => m.positions.every(p => p.instrument.symbol !== undefined))
     .take(1).flatMap(_quotesHistoricals$)
   const historicals$ = model$.filter(m => helpers.isFullyLoaded(m))

@@ -54,9 +54,8 @@ const positions$ = (request$, state$) => filterByCategory(request$, 'positions')
 
 const instruments$ = (request$, state$) => filterByCategory(request$, 'instruments')
   .flatMap(res => state$.take(1).map((state) => {
-    let position = state.positions
-      .filter(p => p.instrumentId === res.request.instrumentId)
-    position[0].instrument = res.body
+    let position = state.positions.find(p => p.instrumentId === res.request.instrumentId)
+    position.instrument = res.body
     return state
   }))
 
@@ -64,8 +63,7 @@ const quotes$ = (request$, state$) => filterByCategory(request$, 'quotes')
   .map(res => res.body.results)
   .flatMap(res => state$.take(1).map((state) => {
     res.forEach(quote => {
-      let position = state.positions
-        .find(p => p.instrument.symbol === quote.symbol)
+      let position = state.positions.find(p => p.instrument.symbol === quote.symbol)
       position.instrument.quote = quote
     })
     return state
@@ -74,8 +72,7 @@ const quotes$ = (request$, state$) => filterByCategory(request$, 'quotes')
 const quoteHistoricals$ = (request$, state$) => filterByCategory(request$, 'quoteHistorical')
   .map(res => res.body)
   .flatMap(res => state$.take(1).map((state) => {
-    let position = state.positions
-      .find(p => p.instrument.symbol === res.symbol)
+    let position = state.positions.find(p => p.instrument.symbol === res.symbol)
     position.historicals = res.historicals
     return state
   }))
