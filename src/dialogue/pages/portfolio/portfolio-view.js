@@ -1,6 +1,7 @@
 import {div, p, h, h1, ul, li, a} from '@cycle/dom'
 import {formatMoney, toFixed} from 'accounting'
-import helpers from './helpers'
+import helpers from '../../../helpers'
+
 
 const view = (state$, router) => {
   const { createHref } = router

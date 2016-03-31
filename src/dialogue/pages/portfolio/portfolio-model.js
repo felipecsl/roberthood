@@ -1,5 +1,5 @@
 import {Observable} from 'rx'
-import responses from './responses'
+import responses from './portfolio-responses'
 
 const portfolioModel = (request$, state$) => {
   const user$ = responses.user$(request$, state$)
@@ -13,6 +13,7 @@ const portfolioModel = (request$, state$) => {
 
   return Observable.merge(state$.take(1), user$, accounts$, portfolio$, historicals$, positions$,
     instruments$, quotes$, quoteHistoricals$)
+      .doOnNext((state) => window.localStorage.setItem("state", JSON.stringify(state)))
 }
 
 export default portfolioModel

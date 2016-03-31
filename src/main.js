@@ -13,15 +13,21 @@ function main(sources) {
   const Content = ContentRouter(sources)
   const {path$, state$} = Content
   let savedToken = window.localStorage.getItem("token")
+  let savedState = JSON.parse(window.localStorage.getItem("state"))
 
   if (savedToken === 'undefined' || savedToken === null) {
     savedToken = undefined
   }
+  if (savedState === 'undefined' || savedState === null) {
+    savedState = { user: ({}) }
+  }
+
+  savedState.token = savedToken
 
   return {
     DOM: Content.DOM,
     HTTP: Content.HTTP,
-    state$: state$.startWith({user: ({}), token: savedToken}),
+    state$: state$.startWith(savedState),
     historicalData: Content.historicalData
   }
 }
