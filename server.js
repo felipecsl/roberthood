@@ -9,7 +9,7 @@ let server = express();
 let BASE_URL = 'https://api.robinhood.com';
 let port = process.env.PORT || 3000;
 
-browserify({ debug: true })
+browserify()
   .transform(babelify)
   .transform({global: true}, 'uglifyify')
   .require("src/app.js", { entry: true })

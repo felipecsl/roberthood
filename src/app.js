@@ -1,6 +1,5 @@
 import {run} from '@cycle/core'
 import {makeDOMDriver} from '@cycle/dom'
-import {makeHistoryDriver} from 'cyclic-history'
 import {makeHTTPDriver} from '@cycle/http'
 import {makeRouterDriver} from 'cyclic-router'
 import {createHashHistory} from 'history'
