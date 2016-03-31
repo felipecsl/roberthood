@@ -13,6 +13,9 @@ const view = (state$, router) => {
             h('.card-content', [
               h1(`.center.equity.${quoteClass}`,
                 `${formatMoney(position.instrument.quote.last_trade_price)}`),
+              div('.center', [
+                h(`small.${quoteClass}`,
+                  `(${helpers.quotePercentChangeStr(position.instrument.quote)}%)`)]),
               div('.chart-placeholder .chart-big'),
             ])
           ])
