@@ -1,21 +1,23 @@
 import Home from '../../pages/home/home-index'
 import Portfolio from '../../pages/portfolio/portfolio-index'
+import Positions from '../../pages/positions/positions-index'
 import Page404 from '../../pages/page404/page404-index'
+import {Observable} from 'rx'
 
 const routes = {
   '/': Home,
   '/portfolio': Portfolio,
+  '/positions/:id': id => sources => Positions({props$: Observable.of({id}), ...sources}),
   '*': Page404,
 }
 
 function ContentRouter(sources) {
   const {router, state$} = sources
-  const {path$, value$} = router.define(routes)
-  const childrenDOM$ = path$.zip(value$,
-    (path, value) => {
+  const match$ = router.define(routes)
+  const childrenDOM$ = match$.map(({path, value}) => {
       const comp = value({
         ...sources,
-        router: router.path(path),
+        router: router,
         state$: state$.take(1),
       })
       return {
@@ -33,7 +35,7 @@ function ContentRouter(sources) {
     HTTP: childrenDOM$.flatMapLatest(s => s.HTTP),
     historicalData: childrenDOM$.flatMapLatest(s => s.historicalData),
     state$: childrenDOM$.flatMapLatest(s => s.state$),
-    path$: path$,
+    path$: match$.pluck('path'),
   }
 }
 

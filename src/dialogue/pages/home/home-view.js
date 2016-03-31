@@ -1,7 +1,7 @@
 import {div, h1, h2, button, h, form, a, p} from '@cycle/dom'
 
 const view = (sources, state$) => {
-  const {router: {createHref}} = sources
+  const {router: { createHref }} = sources
   const portfolioHref = createHref(`/portfolio`)
   return state$.map(s => {
     const tokenPresent = s.token !== undefined

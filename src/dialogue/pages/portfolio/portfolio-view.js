@@ -1,8 +1,9 @@
-import {div, p, h, h1, ul, li} from '@cycle/dom'
+import {div, p, h, h1, ul, li, a} from '@cycle/dom'
 import {formatMoney, toFixed} from 'accounting'
 import helpers from './helpers'
 
-const view = state$ => {
+const view = (state$, router) => {
+  const { createHref } = router
   return state$.map(s => {
     if (!helpers.isFullyLoaded(s)) {
       return h('paper-spinner-lite', { className: 'green', attributes: { active: '' }})
@@ -10,7 +11,6 @@ const view = state$ => {
     const absChange = s.portfolio.last_core_equity - s.portfolio.adjusted_equity_previous_close
     const percentChange = (absChange / s.portfolio.last_core_equity) * 100
     const equityClass = helpers.equityClass(s.portfolio)
-
     return div([
       div([
         div([
@@ -24,18 +24,20 @@ const view = state$ => {
               div('.portfolio-items', { attributes: { role: 'listbox' }}, s.positions.map(position =>
                 h('paper-item', [
                   h('paper-item-body', { attributes: { 'two-line': '' }}, [
-                    div([
-                      `${position.instrument.symbol}`,
-                      div(`.right .${helpers.quoteClass(position.instrument.quote)}`, [
-                        formatMoney(position.instrument.quote.last_trade_price)
-                      ])
-                    ]),
-                    div({ attributes: { secondary: '' }}, [
-                      `${helpers.formatShares(position.quantity)} Shares`,
-                      h(`small .right .${helpers.quoteClass(position.instrument.quote)}`,
-                        `(${helpers.quotePercentChangeStr(position.instrument.quote)}%)`)
-                    ]),
-                    div(`.quote-${position.instrument.symbol}-chart-placeholder .center .chart-small`),
+                    a({href: createHref(`/positions/${position.instrument.symbol}`)}, [
+                      div([
+                        `${position.instrument.symbol}`,
+                        div(`.right .${helpers.quoteClass(position.instrument.quote)}`, [
+                          formatMoney(position.instrument.quote.last_trade_price)
+                        ])
+                      ]),
+                      div({ attributes: { secondary: '' }}, [
+                        `${helpers.formatShares(position.quantity)} Shares`,
+                        h(`small .right .${helpers.quoteClass(position.instrument.quote)}`,
+                          `(${helpers.quotePercentChangeStr(position.instrument.quote)}%)`)
+                      ]),
+                      div(`.quote-${position.instrument.symbol}-chart-placeholder .center .chart-small`)
+                    ])
                   ])
                 ])
               ))

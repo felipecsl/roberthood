@@ -82,7 +82,7 @@ app.addEventListener('dom-change', () => {
     DOM: makeDOMDriver(`#application`),
     HTTP: makeHTTPDriver(),
     historicalData: makeHistoricalDataDriver(),
-    router: makeRouterDriver(makeHistoryDriver(createHashHistory())),
+    router: makeRouterDriver(createHashHistory()),
     state$: makeStateDriver(),
   }
 

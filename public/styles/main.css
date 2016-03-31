@@ -22,7 +22,7 @@ body {
 }
 
 .portfolio-items {
-  min-width: 300px;
+  min-width: 480px;
 }
 
 .right {
@@ -78,4 +78,9 @@ h1.equity {
   stroke: #000;
   stroke-width: 0.5px;
   stroke-dasharray: 1,1;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
 }

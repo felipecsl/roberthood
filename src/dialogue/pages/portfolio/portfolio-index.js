@@ -7,7 +7,7 @@ import requests from './requests'
 const Portfolio = (sources) => {
   const state$ = sources.state$
   const model$ = model(sources.HTTP, state$)
-  const view$ = view(model$)
+  const view$ = view(model$, sources.router)
   const account$ = model$.filter(m => m.token !== undefined)
     .take(1).flatMap(requests.account$)
   const portfolio$ = model$.filter(m => m.account !== undefined)
