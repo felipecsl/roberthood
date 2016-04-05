@@ -32,13 +32,24 @@ const portfolio$ = (request$, state$) => filterByCategory(request$, 'portfolio')
     return state
   }))
 
-const historicals$ = (request$, state$) => filterByCategory(request$, 'historicals')
+const portfolioIntradayHistoricals$ = (request$, state$) => filterByCategory(request$, 'historicals')
+  .filter(res => res.request.span === 'day')
   .map(res => res.body.equity_historicals)
   .flatMap(res => state$.take(1).map((state) => {
-    state.historicals = res
+    state.intradayHistoricals = res
+    state.intradayHistoricals.adjusted_equity_previous_close =
+      state.portfolio.adjusted_equity_previous_close
+    return state
+  }))
+
+const portfolioDailyHistoricals$ = (request$, state$) => filterByCategory(request$, 'historicals')
+  .filter(res => res.request.span === 'year')
+  .map(res => res.body.equity_historicals)
+  .flatMap(res => state$.take(1).map((state) => {
+    state.dailyHistoricals = res
     // TODO: This is awkward: We're assigning a property to an Array type. This is likely gonna
     // cause problems. Need to fix this.
-    state.historicals.adjusted_equity_previous_close =
+    state.dailyHistoricals.adjusted_equity_previous_close =
       state.portfolio.adjusted_equity_previous_close
     return state
   }))
@@ -71,13 +82,33 @@ const quotes$ = (request$, state$) => filterByCategory(request$, 'quotes')
     return state
   }))
 
-const quoteHistoricals$ = (request$, state$) => filterByCategory(request$, 'quoteHistorical')
+const quoteIntradayHistoricals$ = (request$, state$) => filterByCategory(request$, 'quoteHistorical')
+  .filter(res => res.request.span === 'day')
   .map(res => res.body)
   .flatMap(res => state$.take(1).map((state) => {
     let position = state.positions.find(p => p.instrument.symbol === res.symbol)
-    position.historicals = res.historicals
+    position.intradayHistoricals = res.historicals
     return state
   }))
 
-export default {user$, accounts$, portfolio$, historicals$, positions$, instruments$, quotes$,
-  quoteHistoricals$}
+const quoteDailyHistoricals$ = (request$, state$) => filterByCategory(request$, 'quoteHistorical')
+  .filter(res => res.request.span === 'year')
+  .map(res => res.body)
+  .flatMap(res => state$.take(1).map((state) => {
+    let position = state.positions.find(p => p.instrument.symbol === res.symbol)
+    position.dailyHistoricals = res.historicals
+    return state
+  }))
+
+export default {
+  user$,
+  accounts$,
+  portfolio$,
+  portfolioIntradayHistoricals$,
+  portfolioDailyHistoricals$,
+  positions$,
+  instruments$,
+  quotes$,
+  quoteIntradayHistoricals$,
+  quoteDailyHistoricals$
+}

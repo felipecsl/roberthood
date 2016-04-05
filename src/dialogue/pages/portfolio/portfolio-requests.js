@@ -47,23 +47,27 @@ const _quotes$ = ({positions, token}) => Observable.just({
   category: 'quotes',
 })
 
-const _quotesHistoricals$ = (positions, token, interval, span) => positions.map(p => ({
+// Historical data span (either intraday or daily)
+const interval = (i) => i === '1D' ? '5minute' : 'day'
+const span = (i) => i === '1D' ? 'day' : 'year'
+
+const _quotesHistoricals$ = (positions, token, intervalStr) => positions.map(p => ({
   method: 'GET',
   eager: true,
-  url: `/quotes/historicals/${p.instrument.symbol}?interval=${interval}&span=${span}&token=${token}`,
+  url: `/quotes/historicals/${p.instrument.symbol}?interval=${interval(intervalStr)}&span=${span(intervalStr)}&token=${token}`,
   category: 'quoteHistorical',
+  span: span(intervalStr),
 }))
 
-const _historicals$ = (account, token, interval, span) => Observable.just({
+const _historicals$ = (account, token, intervalStr) => Observable.just({
   method: 'GET',
   eager: true,
-  url: `/portfolios/historicals/${account.account_number}?interval=${interval}&span=${span}&token=${token}`,
+  url: `/portfolios/historicals/${account.account_number}?interval=${interval(intervalStr)}&span=${span(intervalStr)}&token=${token}`,
   category: 'historicals',
+  span: span(intervalStr),
 })
 
 const requests = (model$, dataInterval$) => {
-  const interval = (i) => i === '1D' ? '5minute' : 'day'
-  const span = (i) => i === '1D' ? 'day' : 'year'
   // This prevents us from requesting all over again when the state is already fully loaded
   const notLoadedModel$ = model$.filter(m => !helpers.isFullyLoaded(m))
   const account$ = notLoadedModel$.filter(m => m.token !== undefined)
@@ -75,17 +79,17 @@ const requests = (model$, dataInterval$) => {
   const quotes$ = notLoadedModel$.filter(m => m.positions !== undefined)
     .filter(m => m.positions.every(p => p.instrument.symbol !== undefined))
     .take(1).flatMap(_quotes$)
-  const quotesHistoricals$ = Observable.combineLatest(
-    dataInterval$,
-    notLoadedModel$.filter(m => m.positions !== undefined)
-      .filter(m => m.positions.every(p => p.instrument.symbol !== undefined)).take(1),
-    (i, h) => _quotesHistoricals$(h.positions, h.token, interval(i), span(i))
-  ).flatMap(x => x)
-  const historicals$ = Observable.combineLatest(
-    dataInterval$,
-    model$.filter(m => helpers.isFullyLoaded(m)).take(1), (i, h) =>
-      _historicals$(h.account, h.token, interval(i), span(i))
-  ).flatMap(x => x)
+  const quotesHistoricals$ = Observable.from(['1D', '1M'])
+    .map(i => model$.filter(m => m.positions !== undefined)
+     .filter(m => m.positions.every(p => p.instrument.symbol !== undefined))
+     .take(1)
+     .flatMap(h => _quotesHistoricals$(h.positions, h.token, i))
+    ).flatMap(x => x)
+  const historicals$ = Observable.from(['1D', '1M'])
+    .map(i => model$.filter(m => helpers.isFullyLoaded(m))
+      .take(1)
+      .flatMap(h => _historicals$(h.account, h.token, i))
+    ).flatMap(x => x)
   return Observable.merge(
     account$,
     portfolio$,

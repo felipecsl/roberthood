@@ -9,7 +9,7 @@ const Positions = (sources) => {
   const historicalData$ = model$.take(1)
     .map(state => state.positions.find(p => p.instrument.symbol == state.currentInstrument))
     .map(p => ({
-      data$: Observable.just(p.historicals),
+      data$: Observable.just(p.intradayHistoricals),
       prevClose: p.instrument.quote.previous_close,
       selector: '.chart-placeholder',
       width: 480,

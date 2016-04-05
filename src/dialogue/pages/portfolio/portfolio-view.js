@@ -12,6 +12,8 @@ const view = (state$, dataInterval$, router) => {
     const absChange = s.portfolio.last_core_equity - s.portfolio.adjusted_equity_previous_close
     const percentChange = (absChange / s.portfolio.last_core_equity) * 100
     const equityClass = helpers.equityClass(s.portfolio)
+    // Use a fake paper-card component since virtual-dom doesn't handle well changes to Polymer's
+    // paper-card, probably since it generates DOM elements dynamically and it confuses virtual-dom
     return div([
       h(`.paper-card-fake`, [
         div('.heading', [
