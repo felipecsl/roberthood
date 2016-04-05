@@ -4,6 +4,7 @@ import helpers from '../../../helpers'
 import {formatMoney, toFixed} from 'accounting'
 
 const view = (state$, router) => {
+  const { createHref } = router
   return state$.map(s => {
     const position = s.positions.find(p => p.instrument.symbol == s.currentInstrument)
     const quoteClass = helpers.quoteClass(position.instrument.quote)
@@ -17,6 +18,12 @@ const view = (state$, router) => {
                 h(`small.${quoteClass}`,
                   `(${helpers.quotePercentChangeStr(position.instrument.quote)}%)`)]),
               div('.chart-placeholder .chart-big'),
+            ]),
+            h('.card-actions', [
+              a({href: createHref(`/positions/${position.instrument.symbol}/buy`)},
+                h('paper-button', 'Buy')),
+              a({href: createHref(`/positions/${position.instrument.symbol}/sell`)},
+                h('paper-button', 'Buy'))
             ])
           ])
         ])

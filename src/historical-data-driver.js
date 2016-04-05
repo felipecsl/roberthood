@@ -7,9 +7,9 @@ function makeHistoricalDataDriver() {
       chartData.data$.subscribe(h => {
         let prevClose = 0
         let data = []
-        if (h.adjusted_equity_previous_close !== undefined) {
+        if (chartData.equityPrevClose !== undefined) {
           // Portfolio historicals
-          prevClose = parseFloat(h.adjusted_equity_previous_close)
+          prevClose = parseFloat(chartData.equityPrevClose)
           data = h.map(d => [d.adjusted_open_equity, d.adjusted_close_equity])
             .reduce((a, b) => a.concat(b), [])
             .map(d => parseFloat(d))
@@ -20,15 +20,19 @@ function makeHistoricalDataDriver() {
             .reduce((a, b) => a.concat(b), [])
             .map(d => parseFloat(d))
         }
-        const klass = data[data.length - 1] > prevClose ? 'quote-up' : 'quote-down'
         const margin = {top: 0, right: 0, bottom: 0, left: 0},
             width = chartData.width - margin.left - margin.right,
             height = chartData.height - margin.top - margin.bottom
+        const minValue = Math.min(prevClose, Math.min(...data))
+        const maxValue = Math.max(prevClose, Math.max(...data))
+        const isTrendingUp = (chartData.displayPrevClose ? data[data.length - 1] > prevClose
+          : data[data.length - 1] > data[0])
+        const klass = isTrendingUp ? 'quote-up' : 'quote-down'
         const x = d3.scale.linear()
             .domain([0, data.length])
             .range([0, width])
         const y = d3.scale.linear()
-            .domain([Math.min(prevClose, Math.min(...data)), Math.max(prevClose, Math.max(...data))])
+            .domain([minValue, maxValue])
             .range([height, 0])
         const xAxis = d3.svg.axis()
             .scale(x)
@@ -42,6 +46,7 @@ function makeHistoricalDataDriver() {
         const horizLine = d3.svg.line()
             .x((d, i) => x(i * (data.length - 1)))
             .y(d => y(d))
+        d3.selectAll(`${chartData.selector} > *`).remove()
         const svg = d3.select(chartData.selector)
             .append("svg")
             .attr('class', 'chart')
@@ -49,9 +54,11 @@ function makeHistoricalDataDriver() {
             .attr("height", height + margin.top + margin.bottom)
           .append("g")
             .attr("transform", `translate(${margin.left},${margin.top})`)
-        svg.append('path')
-              .attr("class", "reference")
-              .attr('d', horizLine([prevClose, prevClose]))
+        if (chartData.displayPrevClose) {
+          svg.append('path')
+                .attr("class", "reference")
+                .attr('d', horizLine([prevClose, prevClose]))
+        }
         svg.append('path')
             .attr("class", `line ${klass}`)
             .attr("d", line(data))
