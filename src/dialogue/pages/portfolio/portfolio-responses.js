@@ -36,6 +36,8 @@ const historicals$ = (request$, state$) => filterByCategory(request$, 'historica
   .map(res => res.body.equity_historicals)
   .flatMap(res => state$.take(1).map((state) => {
     state.historicals = res
+    // TODO: This is awkward: We're assigning a property to an Array type. This is likely gonna
+    // cause problems. Need to fix this.
     state.historicals.adjusted_equity_previous_close =
       state.portfolio.adjusted_equity_previous_close
     return state
