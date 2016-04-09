@@ -5,7 +5,11 @@ const homeModel = (sources) => {
       .flatMap(x => x)
       .map(res => res.body)
       .share()
-      .doOnNext(({token}) => window.localStorage.setItem("token", token)))
+      .doOnNext(({token}) => {
+        if (typeof window !== 'undefined') {
+          window.localStorage.setItem("token", token)
+        }
+      }))
 }
 
 export default homeModel
