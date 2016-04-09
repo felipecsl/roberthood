@@ -1,7 +1,6 @@
 import view from './home-view'
 import intent from './home-intent'
 import model from './home-model'
-import {Observable, ReplaySubject} from 'rx'
 
 const Home = (sources) => {
   const {state$} = sources
