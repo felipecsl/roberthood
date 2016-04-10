@@ -26,5 +26,4 @@ const portfolioModel = (request$, state$) => {
     quoteDailyHistoricals$
   )
 }
-
 export default portfolioModel

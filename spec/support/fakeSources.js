@@ -11,7 +11,7 @@ FakeElement.prototype.events = function(eventName) {
 let fakeElements = []
 const fakeDOMDriver = () => {
   fakeElements = []
-  
+
   return {
     select: (selector) => {
       let existing = fakeElements.find(e => e.selector === selector)
@@ -31,4 +31,11 @@ const fakeRouterDriver = () => {
   }
 }
 
-export default {fakeDOMDriver, fakeHTTPDriver, fakeStateDriver, fakeRouterDriver}
+const sources = () => ({
+  DOM: fakeDOMDriver(),
+  HTTP: fakeHTTPDriver(),
+  state$: fakeStateDriver(),
+  router: fakeRouterDriver()
+})
+
+export default sources
