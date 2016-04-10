@@ -4,10 +4,7 @@ import moment from 'moment'
 const data$ = (model$, dataInterval$) => {
   /** Returns a Moment (date) object that represents the provided Interval String */
   const intervalStrToMoment = (str) => {
-    if (str === '1D') {
-      return moment().subtract(1, 'day')
-    }
-    if (str === '1M') {
+    if (str === '1D' || str === '1M') {
       return moment().subtract(1, 'month')
     }
     if (str == '3M') {
