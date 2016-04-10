@@ -1,6 +1,7 @@
 # RobertHood
 
 [![Build Status](https://travis-ci.org/felipecsl/roberthood.svg?branch=master)](https://travis-ci.org/felipecsl/roberthood)
+[![Dependency Status](https://david-dm.org/felipecsl/roberthood.svg)](https://david-dm.org/felipecsl/roberthood)
 
 ![screenshot](https://raw.githubusercontent.com/felipecsl/roberthood/master/screenshot.png)
 

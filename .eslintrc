@@ -4,5 +4,9 @@
   "globals": {
     "location": true,
     "require": true
+  },
+  "rules": {
+    "quotes": "off",
+    "comma-dangle": "warn"
   }
 }
