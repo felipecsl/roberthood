@@ -14,7 +14,7 @@
     "prod:server": "node build/server.js",
     "start": "npm-run-all build --parallel watch server",
     "postinstall": "bower install && babel -d build server.js",
-    "test": "npm-run-all test:build --parallel test:watch test:run",
+    "test": "npm-run-all test:build test:watch",
     "test:build": "browserify -d -e spec/homeSpec.js -t babelify -o spec/bundleSpec.js",
     "test:watch": "watchify -d -e spec/homeSpec.js -t babelify -o spec/bundleSpec.js -v",
     "test:run": "jasmine"

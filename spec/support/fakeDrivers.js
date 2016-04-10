@@ -8,22 +8,26 @@ var FakeElement = function(selector) {
 FakeElement.prototype.events = function(eventName) {
   return this.evts
 }
-const fakeElements = []
-const fakeDOMDriver = {
-  select(selector) {
-    let existing = fakeElements.find(e => e.selector === selector)
-    if (existing === undefined) {
-      existing = new FakeElement(selector)
-      fakeElements.push(existing)
+let fakeElements = []
+const fakeDOMDriver = () => {
+  fakeElements = []
+  
+  return {
+    select: (selector) => {
+      let existing = fakeElements.find(e => e.selector === selector)
+      if (existing === undefined) {
+        existing = new FakeElement(selector)
+        fakeElements.push(existing)
+      }
+      return existing
     }
-    return existing
   }
 }
-const fakeHTTPDriver = new ReplaySubject()
-const fakeStateDriver = new ReplaySubject()
-const fakeRouterDriver = {
-  createHref(path) {
-    return path
+const fakeHTTPDriver = () => new ReplaySubject()
+const fakeStateDriver = () => new ReplaySubject()
+const fakeRouterDriver = () => {
+  return {
+    createHref: (path) => path
   }
 }
 
