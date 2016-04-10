@@ -28,7 +28,7 @@ describe('Portfolio Data', () => {
         })
       })
 
-      it('should not filter any data out', (done) => {
+      it('no filtering', (done) => {
         data.forEach((e, i) =>
           e.begins_at = moment().subtract(data.length - 1 - i, 'day').format(dateFormat))
         const model$ = Observable.just(({ dailyHistoricals: data }))
@@ -41,7 +41,7 @@ describe('Portfolio Data', () => {
         })
       })
 
-      it('should filter out data older than a month', (done) => {
+      it('filtering', (done) => {
         data.forEach((e, i) =>
           e.begins_at = moment().subtract(data.length - 1 - i, 'month').format(dateFormat))
         const model$ = Observable.just(({ dailyHistoricals: data }))
@@ -55,7 +55,7 @@ describe('Portfolio Data', () => {
     })
 
     describe('Intraday', () => {
-      it('should not filter out daily historical data', (done) => {
+      it('filtering', (done) => {
         data.forEach((e, i) =>
           e.begins_at = moment().subtract(data.length - 1 - i, 'hour').format(dateFormat))
         const model$ = Observable.just(({ intradayHistoricals: data }))
@@ -110,7 +110,7 @@ describe('Portfolio Data', () => {
         })
       })
 
-      it('should return correct data', (done) => {
+      it('data integrity', (done) => {
         data.forEach((e, i) =>
           e.begins_at = moment().subtract(data.length - 1 - i, 'day').format(dateFormat))
         const model$ = Observable.just(({ positions: [{
@@ -129,7 +129,7 @@ describe('Portfolio Data', () => {
         })
       })
 
-      it('should filter out data', (done) => {
+      it('filtering', (done) => {
         data.forEach((e, i) =>
           e.begins_at = moment().subtract(data.length - 1 - i, 'month').format(dateFormat))
         const model$ = Observable.just(({ positions: [{
@@ -151,11 +151,34 @@ describe('Portfolio Data', () => {
           done()
         })
       })
+    })
 
-      describe("Intraday", () => {
-        it('data format', (done) => {
-          data.forEach((e, i) =>
-            e.begins_at = moment().subtract(data.length - 1 - i, 'day').format(dateFormat))
+    describe("Intraday", () => {
+      it('data format', (done) => {
+        data.forEach((e, i) =>
+          e.begins_at = moment().subtract(data.length - 1 - i, 'day').format(dateFormat))
+        const model$ = Observable.just(({ positions: [{
+          intradayHistoricals: data,
+          instrument: {
+            symbol: 'AAPL',
+            quote: { previous_close: "1234.5678" },
+          }
+        }] }))
+        const dataInterval$ = Observable.just('1D')
+        const data$ = PortfolioData(model$, dataInterval$)
+        data$.subscribe(d => {
+          expect(d.prevClose).toEqual("1234.5678")
+          expect(d.displayPrevClose).toEqual(true)
+          expect(d.selector).toEqual('.quote-AAPL-chart-placeholder')
+          expect(d.width).toEqual(120)
+          expect(d.height).toEqual(40)
+          done()
+        })
+      })
+
+      it('filtering', (done) => {
+        data.forEach((e, i) =>
+          e.begins_at = moment().subtract(data.length - 1 - i, 'hour').format(dateFormat))
           const model$ = Observable.just(({ positions: [{
             intradayHistoricals: data,
             instrument: {
@@ -163,35 +186,12 @@ describe('Portfolio Data', () => {
               quote: { previous_close: "1234.5678" },
             }
           }] }))
-          const dataInterval$ = Observable.just('1D')
-          const data$ = PortfolioData(model$, dataInterval$)
-          data$.subscribe(d => {
-            expect(d.prevClose).toEqual("1234.5678")
-            expect(d.displayPrevClose).toEqual(true)
-            expect(d.selector).toEqual('.quote-AAPL-chart-placeholder')
-            expect(d.width).toEqual(120)
-            expect(d.height).toEqual(40)
-            done()
-          })
-        })
-
-        it('should not filter out daily historical data', (done) => {
-          data.forEach((e, i) =>
-            e.begins_at = moment().subtract(data.length - 1 - i, 'hour').format(dateFormat))
-            const model$ = Observable.just(({ positions: [{
-              intradayHistoricals: data,
-              instrument: {
-                symbol: 'AAPL',
-                quote: { previous_close: "1234.5678" },
-              }
-            }] }))
-          const dataInterval$ = Observable.just('1D')
-          const data$ = PortfolioData(model$, dataInterval$)
-          data$.subscribe(d => {
-            delete data.adjusted_equity_previous_close
-            expect(d.data$).toEqual(Observable.just(data))
-            done()
-          })
+        const dataInterval$ = Observable.just('1D')
+        const data$ = PortfolioData(model$, dataInterval$)
+        data$.subscribe(d => {
+          delete data.adjusted_equity_previous_close
+          expect(d.data$).toEqual(Observable.just(data))
+          done()
         })
       })
     })
