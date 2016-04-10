@@ -1,5 +1,7 @@
 # RobertHood
 
+[![Build Status](https://travis-ci.org/felipecsl/roberthood.svg?branch=master)](https://travis-ci.org/felipecsl/roberthood)
+
 ![screenshot](https://raw.githubusercontent.com/felipecsl/roberthood/master/screenshot.png)
 
 A simple Web UI that you can use to manage your Robinhood account.
