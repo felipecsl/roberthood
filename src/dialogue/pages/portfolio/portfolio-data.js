@@ -20,7 +20,7 @@ const data$ = (model$, dataInterval$) => {
 
   /** Filters the provided data Array by skipping entries older than the provided interval date */
   const filterDataByInterval = (dataArray, intervalStr) =>
-    Observable.just(dataArray.filter(h => moment(h.begins_at) > intervalStrToMoment(intervalStr)))
+    dataArray.filter(h => moment(h.begins_at) > intervalStrToMoment(intervalStr))
 
   /**
    * Map a data interval String (1D, 1M, etc.) and *portfolio* historical data from the API into an
@@ -31,8 +31,12 @@ const data$ = (model$, dataInterval$) => {
    * Params: i: String (interval), d: Array (raw data)
    */
   const transformPortfolioDataWithInterval = (i, d) => ({
-    data$: filterDataByInterval(d, i),
-    equityPrevClose: d.adjusted_equity_previous_close,
+    data: filterDataByInterval(d, i).map(d => {
+      d.open_price = d.adjusted_open_equity
+      d.close_price = d.adjusted_close_equity
+      return d
+    }),
+    prevClose: d.adjusted_equity_previous_close,
     displayPrevClose: displayPrevClose(i),
     selector: '.chart-placeholder',
     width: 480,
@@ -48,7 +52,7 @@ const data$ = (model$, dataInterval$) => {
    * Params: i: String (interval), p: Array (portfolio positions)
    */
   const transformIntradayQuoteDataWithInterval = (i, p) => p.map(p => ({
-    data$: filterDataByInterval(p.intradayHistoricals, i),
+    data: filterDataByInterval(p.intradayHistoricals, i),
     prevClose: p.instrument.quote.previous_close,
     displayPrevClose: true,
     selector: `.quote-${p.instrument.symbol}-chart-placeholder`,
@@ -57,7 +61,7 @@ const data$ = (model$, dataInterval$) => {
   }))
 
   const transformDailyQuoteDataWithInterval = (i, p) => p.map(p => ({
-    data$: filterDataByInterval(p.dailyHistoricals, i),
+    data: filterDataByInterval(p.dailyHistoricals, i),
     prevClose: p.instrument.quote.previous_close,
     displayPrevClose: false,
     selector: `.quote-${p.instrument.symbol}-chart-placeholder`,

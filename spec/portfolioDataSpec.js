@@ -10,6 +10,12 @@ describe('Portfolio Data', () => {
     data.adjusted_equity_previous_close = "3286.1400"
   })
 
+  const mutateData = (data) => data.map(d => {
+    d.open_price = d.adjusted_open_equity
+    d.close_price = d.adjusted_close_equity
+    return d
+  })
+
   describe('Equity', () => {
     describe('Daily', () => {
       it('data format', (done) => {
@@ -19,7 +25,7 @@ describe('Portfolio Data', () => {
         const dataInterval$ = Observable.just('1Y')
         const data$ = PortfolioData(model$, dataInterval$)
         data$.subscribe(d => {
-          expect(d.equityPrevClose).toEqual("3286.1400")
+          expect(d.prevClose).toEqual("3286.1400")
           expect(d.displayPrevClose).toEqual(false)
           expect(d.selector).toEqual('.chart-placeholder')
           expect(d.width).toEqual(480)
@@ -36,7 +42,7 @@ describe('Portfolio Data', () => {
         const data$ = PortfolioData(model$, dataInterval$)
         data$.subscribe(d => {
           delete data.adjusted_equity_previous_close
-          expect(d.data$).toEqual(Observable.just(data))
+          expect(d.data).toEqual(mutateData(data))
           done()
         })
       })
@@ -48,7 +54,7 @@ describe('Portfolio Data', () => {
         const dataInterval$ = Observable.just('1M')
         const data$ = PortfolioData(model$, dataInterval$)
         data$.subscribe(d => {
-          expect(d.data$).toEqual(Observable.just([data[data.length - 1]]))
+          expect(d.data).toEqual(mutateData([data[data.length - 1]]))
           done()
         })
       })
@@ -63,7 +69,7 @@ describe('Portfolio Data', () => {
         const data$ = PortfolioData(model$, dataInterval$)
         data$.subscribe(d => {
           delete data.adjusted_equity_previous_close
-          expect(d.data$).toEqual(Observable.just(data))
+          expect(d.data).toEqual(mutateData(data))
           done()
         })
       })
@@ -75,7 +81,7 @@ describe('Portfolio Data', () => {
         const dataInterval$ = Observable.just('1D')
         const data$ = PortfolioData(model$, dataInterval$)
         data$.subscribe(d => {
-          expect(d.equityPrevClose).toEqual("3286.1400")
+          expect(d.prevClose).toEqual("3286.1400")
           expect(d.displayPrevClose).toEqual(true)
           expect(d.selector).toEqual('.chart-placeholder')
           expect(d.width).toEqual(480)
@@ -124,7 +130,7 @@ describe('Portfolio Data', () => {
         const data$ = PortfolioData(model$, dataInterval$)
         data$.subscribe(d => {
           delete data.adjusted_equity_previous_close
-          expect(d.data$).toEqual(Observable.just(data))
+          expect(d.data).toEqual(data)
           done()
         })
       })
@@ -143,11 +149,11 @@ describe('Portfolio Data', () => {
         const data$ = PortfolioData(model$, dataInterval$)
         data$.subscribe(d => {
           delete data.adjusted_equity_previous_close
-          expect(d.data$).toEqual(Observable.just([
+          expect(d.data).toEqual([
             data[data.length - 3],
             data[data.length - 2],
             data[data.length - 1]
-          ]))
+          ])
           done()
         })
       })
@@ -190,7 +196,7 @@ describe('Portfolio Data', () => {
         const data$ = PortfolioData(model$, dataInterval$)
         data$.subscribe(d => {
           delete data.adjusted_equity_previous_close
-          expect(d.data$).toEqual(Observable.just(data))
+          expect(d.data).toEqual(data)
           done()
         })
       })
