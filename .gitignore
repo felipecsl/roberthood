@@ -13,3 +13,4 @@ spec/bundleSpec.js
 build
 temp
 test/bundle.js
+.DS_Store
