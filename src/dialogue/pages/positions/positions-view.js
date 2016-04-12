@@ -20,7 +20,7 @@ const view = (state$, dataInterval$, router) => {
               div('.center', [
                 h(`small.${quoteClass}`,
                   `(${helpers.quotePercentChangeStr(position.instrument.quote)}%)`)]),
-              div('.chart-placeholder .chart-big'),
+              div(`.quote-${position.instrument.symbol}-chart-placeholder .chart-big`),
               div(['1D', '1M', '3M', '6M', '1Y'].map((i) =>
                 div({ className: di === i ? 'chart-interval center selected' : 'chart-interval center' }, i))),
             ]),
