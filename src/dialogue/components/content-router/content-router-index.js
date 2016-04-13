@@ -1,12 +1,14 @@
 import Home from '../../pages/home/home-index'
 import Portfolio from '../../pages/portfolio/portfolio-index'
 import Positions from '../../pages/positions/positions-index'
+import Account from '../../pages/account/account-index'
 import Page404 from '../../pages/page404/page404-index'
 import {Observable} from 'rx'
 
 const routes = {
   '/': Home,
   '/portfolio': Portfolio,
+  '/account': Account,
   '/positions/:id': id => sources => Positions({props$: Observable.of({id}), ...sources}),
   '*': Page404,
 }

@@ -126,3 +126,21 @@ a {
   padding: 16px;
   position: relative;
 }
+
+paper-card.account {
+  width: 400px;
+}
+
+paper-card.account .pane {
+  display: inline-block;
+  width: 50%;
+}
+
+paper-card.account .pane h3 {
+  margin: 0;
+}
+
+paper-card.account .pane p {
+  color: #9C9696;
+  margin-top: 5px;
+}

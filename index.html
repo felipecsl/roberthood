@@ -55,20 +55,24 @@
       </paper-toolbar>
 
       <!-- Drawer Content -->
-      <paper-menu class="app-menu" attr-for-selected="data-route" selected="[[route]]">
-        <a data-route="home" href="{{baseUrl}}">
+      <paper-menu class="app-menu" attr-for-selected="data-route" selected="0">
+        <a data-route="portfolio" href="/#/portfolio">
           <iron-icon icon="account-balance"></iron-icon>
           <span>Portfolio</span>
         </a>
 
-        <a data-route="users" href="{{baseUrl}}users">
+        <a data-route="users" href="/#/account">
           <iron-icon icon="trending-up"></iron-icon>
           <span>Account</span>
         </a>
 
-        <a data-route="contact" href="{{baseUrl}}contact">
+        <a data-route="contact" href="/#/orders">
           <iron-icon icon="account-balance-wallet"></iron-icon>
           <span>Order history</span>
+        </a>
+        <a data-route="contact" href="/#/logout">
+          <iron-icon icon="power-settings-new"></iron-icon>
+          <span>Sign Out</span>
         </a>
       </paper-menu>
     </paper-scroll-header-panel>
