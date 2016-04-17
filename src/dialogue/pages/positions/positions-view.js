@@ -11,7 +11,7 @@ const view = (state$, dataInterval$, router) => {
     const quoteHistoricalData = new QuoteHistoricalData(position, di)
     const absChange = quoteHistoricalData.absChange()
     const percentChange = quoteHistoricalData.percentChange()
-    const quoteClass = helpers.equityClass(absChange)
+    const quoteClass = helpers.chartClass(absChange)
     return div([
         div([
           h(`.paper-card-fake`, [
