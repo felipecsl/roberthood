@@ -1,6 +1,8 @@
 import {div, p, h, h1, ul, li, a} from '@cycle/dom'
 import {formatMoney, toFixed} from 'accounting'
 import helpers from '../../../helpers'
+import EquityHistoricalData from '../../../models/equity-historical-data'
+import QuoteHistoricalData from '../../../models/quote-historical-data'
 import {Observable} from 'rx'
 
 const view = (state$, dataInterval$, router) => {
@@ -9,9 +11,10 @@ const view = (state$, dataInterval$, router) => {
     if (!helpers.isFullyLoaded(s)) {
       return h('paper-spinner-lite', { className: 'green', attributes: { active: '' }})
     }
-    const absChange = s.portfolio.last_core_equity - s.portfolio.adjusted_equity_previous_close
-    const percentChange = (absChange / s.portfolio.last_core_equity) * 100
-    const equityClass = helpers.equityClass(s.portfolio)
+    const equityHistoricalData = new EquityHistoricalData(s, di)
+    const absChange = equityHistoricalData.absChange()
+    const percentChange = equityHistoricalData.percentChange()
+    const equityClass = helpers.chartClass(absChange)
     // Use a fake paper-card component since virtual-dom doesn't handle well changes to Polymer's
     // paper-card, probably since it generates DOM elements dynamically and it confuses virtual-dom
     return div([
@@ -27,26 +30,27 @@ const view = (state$, dataInterval$, router) => {
           div('.chart-placeholder .chart-big'),
           div(['1D', '1M', '3M', '6M', '1Y'].map((i) =>
             div({ className: di === i ? 'chart-interval center selected' : 'chart-interval center' }, i))),
-          div('.portfolio-items', { attributes: { role: 'listbox' }}, s.positions.map(position =>
-            h('paper-item', [
+          div('.portfolio-items', { attributes: { role: 'listbox' }}, s.positions.map(position => {
+            const quoteData = new QuoteHistoricalData(position, di)
+            return h('paper-item', [
               h('paper-item-body', { attributes: { 'two-line': '' }}, [
                 a({href: createHref(`/positions/${position.instrument.symbol}`)}, [
                   div([
                     `${position.instrument.symbol}`,
-                    div(`.right .${helpers.quoteClass(position.instrument.quote)}`, [
+                    div(`.right .${helpers.chartClass(quoteData.absChange())}}`, [
                       formatMoney(position.instrument.quote.last_trade_price)
                     ])
                   ]),
                   div({ attributes: { secondary: '' }}, [
                     `${helpers.formatShares(position.quantity)} Shares`,
-                    h(`small .right .${helpers.quoteClass(position.instrument.quote)}`,
-                      `(${helpers.quotePercentChangeStr(position.instrument.quote)}%)`)
+                    h(`small .right .${helpers.chartClass(quoteData.absChange())}`,
+                      `${formatMoney(quoteData.absChange())} (${toFixed(quoteData.percentChange(), 2)}%)`)
                   ]),
                   div(`.quote-${position.instrument.symbol}-chart-placeholder .center .chart-small`)
                 ])
               ])
             ])
-          ))
+          }))
         ])
       ])
     ])
