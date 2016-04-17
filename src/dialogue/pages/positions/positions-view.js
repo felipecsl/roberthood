@@ -16,7 +16,7 @@ const view = (state$, dataInterval$, router) => {
         div([
           h(`.paper-card-fake`, [
             div('.heading', [
-              h1(s.currentInstrument)
+              h1(`${position.instrument.name} (${position.instrument.symbol})`),
             ]),
             h('.card-content', [
               h1(`.center.equity.${quoteClass}`,

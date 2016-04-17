@@ -11,10 +11,10 @@ const view = (state$, dataInterval$, router) => {
     if (!helpers.isFullyLoaded(s)) {
       return h('paper-spinner-lite', { className: 'green', attributes: { active: '' }})
     }
-    const equityHistoricalData = new EquityHistoricalData(s, di)
-    const absChange = equityHistoricalData.absChange()
-    const percentChange = equityHistoricalData.percentChange()
-    const equityClass = helpers.chartClass(absChange)
+    const equityHistoricalData = new EquityHistoricalData(s, di),
+          absChange = equityHistoricalData.absChange(),
+          percentChange = equityHistoricalData.percentChange(),
+          equityClass = helpers.chartClass(absChange)
     // Use a fake paper-card component since virtual-dom doesn't handle well changes to Polymer's
     // paper-card, probably since it generates DOM elements dynamically and it confuses virtual-dom
     return div([
@@ -31,20 +31,22 @@ const view = (state$, dataInterval$, router) => {
           div(['1D', '1M', '3M', '6M', '1Y'].map((i) =>
             div({ className: di === i ? 'chart-interval center selected' : 'chart-interval center' }, i))),
           div('.portfolio-items', { attributes: { role: 'listbox' }}, s.positions.map(position => {
-            const quoteData = new QuoteHistoricalData(position, di)
+            const quoteData = new QuoteHistoricalData(position, di),
+                  quoteAbsChange = quoteData.absChange(),
+                  quoteClass = helpers.chartClass(quoteAbsChange)
             return h('paper-item', [
               h('paper-item-body', { attributes: { 'two-line': '' }}, [
                 a({href: createHref(`/positions/${position.instrument.symbol}`)}, [
                   div([
                     `${position.instrument.symbol}`,
-                    div(`.right .${helpers.chartClass(quoteData.absChange())}}`, [
+                    div(`.right .${quoteClass}}`, [
                       formatMoney(position.instrument.quote.last_trade_price)
                     ])
                   ]),
                   div({ attributes: { secondary: '' }}, [
                     `${helpers.formatShares(position.quantity)} Shares`,
-                    h(`small .right .${helpers.chartClass(quoteData.absChange())}`,
-                      `${formatMoney(quoteData.absChange())} (${toFixed(quoteData.percentChange(), 2)}%)`)
+                    h(`small .right .${quoteClass}`,
+                      `${formatMoney(quoteAbsChange)} (${toFixed(quoteData.percentChange(), 2)}%)`)
                   ]),
                   div(`.quote-${position.instrument.symbol}-chart-placeholder .center .chart-small`)
                 ])
