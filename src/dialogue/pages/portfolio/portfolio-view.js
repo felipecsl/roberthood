@@ -1,6 +1,7 @@
 import {div, p, h, h1, ul, li, a} from '@cycle/dom'
 import {formatMoney, toFixed} from 'accounting'
 import helpers from '../../../helpers'
+import EquityHistoricalData from '../../../models/equity-historical-data'
 import {Observable} from 'rx'
 
 const view = (state$, dataInterval$, router) => {
@@ -9,9 +10,10 @@ const view = (state$, dataInterval$, router) => {
     if (!helpers.isFullyLoaded(s)) {
       return h('paper-spinner-lite', { className: 'green', attributes: { active: '' }})
     }
-    const absChange = s.portfolio.last_core_equity - s.portfolio.adjusted_equity_previous_close
-    const percentChange = (absChange / s.portfolio.last_core_equity) * 100
-    const equityClass = helpers.equityClass(s.portfolio)
+    const equityHistoricalData = new EquityHistoricalData(s, di)
+    const absChange = equityHistoricalData.absChange()
+    const percentChange = equityHistoricalData.percentChange()
+    const equityClass = helpers.equityClass(absChange)
     // Use a fake paper-card component since virtual-dom doesn't handle well changes to Polymer's
     // paper-card, probably since it generates DOM elements dynamically and it confuses virtual-dom
     return div([

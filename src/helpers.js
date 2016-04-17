@@ -23,10 +23,7 @@ const helpers = {
    * Returns the CSS class name to be used for displaying the provided portfolio based on
    * whether it is going up or down.
    */
-  equityClass: (portfolio) => {
-    return parseFloat(portfolio.last_core_equity) > parseFloat(portfolio.equity_previous_close)
-      ? CLASS_QUOTE_UP : CLASS_QUOTE_DOWN
-  },
+  equityClass: (absChange) => absChange >= 0 ? CLASS_QUOTE_UP : CLASS_QUOTE_DOWN,
 
   /**
    * Returns true if the provided model object is already fully loaded and ready

@@ -156,6 +156,17 @@ server.get('/quotes', function (req, res) {
   proxyRequest(options, res);
 });
 
+server.get('/orders', function (req, res) {
+  var options = {
+    url: BASE_URL + '/orders/',
+    method: 'GET',
+    headers: {
+      "Authorization": "Token " + req.query.token
+    }
+  };
+  proxyRequest(options, res);
+});
+
 server.get('/quotes/historicals/:instrument_id', function (req, res) {
   var options = {
     url: BASE_URL + '/quotes/historicals/' + req.params.instrument_id + '/',
