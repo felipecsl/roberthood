@@ -144,3 +144,7 @@ paper-card.account .pane p {
   color: #9C9696;
   margin-top: 5px;
 }
+
+.buy-form .cost {
+  margin-top: 30px;
+}

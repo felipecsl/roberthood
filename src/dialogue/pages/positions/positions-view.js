@@ -31,7 +31,7 @@ const view = (state$, dataInterval$, router) => {
               a({href: createHref(`/positions/${position.instrument.symbol}/buy`)},
                 h('paper-button', 'Buy')),
               a({href: createHref(`/positions/${position.instrument.symbol}/sell`)},
-                h('paper-button', 'Buy'))
+                h('paper-button', 'Sell'))
             ])
           ])
         ])
