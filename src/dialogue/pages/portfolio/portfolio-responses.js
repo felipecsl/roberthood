@@ -1,11 +1,5 @@
 import helpers from '../../../helpers'
 
-function instrumentIdFromPosition(position) {
-  return position.instrument
-    .replace("https://api.robinhood.com/instruments/", "")
-    .replace("/", "")
-}
-
 function filterByCategory(request$, category) {
   return request$.flatMap(x => x)
     .filter(res => res.request.category === category)
@@ -57,7 +51,7 @@ const portfolioDailyHistoricals$ = (request$, state$) => filterByCategory(reques
 const positions$ = (request$, state$) => filterByCategory(request$, 'positions')
   .map(res => res.body.results)
   .map(results => results.map(pos => {
-    pos.instrumentId = instrumentIdFromPosition(pos)
+    pos.instrumentId = helpers.instrumentIdFromUrl(pos.instrument)
     return pos
   }))
   .flatMap(res => state$.take(1).map((state) => {

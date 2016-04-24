@@ -148,3 +148,7 @@ paper-card.account .pane p {
 .buy-form .cost {
   margin-top: 30px;
 }
+
+.card-content.orders {
+  width: 300px;
+}
