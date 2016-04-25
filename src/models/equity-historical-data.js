@@ -23,8 +23,8 @@ export default class EquityHistoricalData extends HistoricalData {
       prevClose: previous_close,
       displayPrevClose: super.displayPrevClose(),
       selector: '.chart-placeholder',
-      width: 480,
-      height: 250
+      width: 720,
+      height: 300
     })
   }
 
@@ -52,6 +52,8 @@ export default class EquityHistoricalData extends HistoricalData {
     return super.filterDataByInterval(dataToFilter).map(d => {
       d.open_price = d.adjusted_open_equity
       d.close_price = d.adjusted_close_equity
+      d.high_price = Math.max(d.adjusted_open_equity, d.adjusted_close_equity)
+      d.low_price = Math.min(d.adjusted_open_equity, d.adjusted_close_equity)
       return d
     })
   }

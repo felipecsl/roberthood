@@ -59,9 +59,26 @@ h1.equity {
   display: none;
 }
 
+.chart-big svg.candle {
+  shape-rendering: crispEdges;
+}
+
 .chart-big .line {
   fill: none;
   stroke-width: 2px;
+}
+
+.chart-big .candle {
+  stroke-width: 1px;
+  stroke: black;
+}
+
+.chart-big .candle.quote-up {
+  fill: #00cf98;
+}
+
+.chart-big .candle.quote-down {
+  fill: red;
 }
 
 .chart-small {
@@ -70,6 +87,10 @@ h1.equity {
 
 .chart-small .line {
   fill: none;
+  stroke-width: 1px;
+}
+
+.chart-small .candle {
   stroke-width: 1px;
 }
 
@@ -83,11 +104,6 @@ h1.equity {
 a {
   color: inherit;
   text-decoration: none;
-}
-
-.chart-placeholder {
-  width: 480px;
-  height: 250px;
 }
 
 .chart-interval {
@@ -151,4 +167,8 @@ paper-card.account .pane p {
 
 .card-content.orders {
   width: 300px;
+}
+
+.toolbar-tools {
+  padding-right: 140px !important;
 }

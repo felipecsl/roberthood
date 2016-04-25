@@ -11,7 +11,9 @@ export default (model$) => {
       category: 'orders',
     }))
 
-  const instruments$ = model$.filter(m => m.token !== undefined && m.orders !== undefined)
+  const instruments$ = model$.filter(m => m.token !== undefined
+      && m.orders !== undefined
+      && m.orders.every(o => typeof o.instrument === 'string'))
     .take(1)
     .flatMap(m => m.orders.map(o => ({
       method: 'GET',
