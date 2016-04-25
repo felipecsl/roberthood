@@ -2,7 +2,7 @@ import {Observable} from 'rx'
 import {parseData} from '../src/historical-data-driver'
 
 describe('Data Driver', () => {
-  it('data format', () => {
+  it('line data format', () => {
     const data = [
       { "close_price":"3293.6000", "adjusted_close_equity":"3293.6000", "begins_at":"2016-04-01T00:00:00Z", "open_market_value":"2990.5400", "open_price":"3283.8600", "adjusted_open_equity":"3283.8600", "close_market_value":"3000.2800", "net_return":"0.0030", "open_equity":"3283.8600", "close_equity":"3293.6000" },
       { "close_price":"3289.3600", "adjusted_close_equity":"3289.3600", "begins_at":"2016-04-04T00:00:00Z", "open_market_value":"3018.6300", "open_price":"3311.9500", "adjusted_open_equity":"3311.9500", "close_market_value":"2996.0400", "net_return":"-0.0068", "open_equity":"3311.9500", "close_equity":"3289.3600" },
@@ -24,6 +24,76 @@ describe('Data Driver', () => {
       minValue: 1234.56,
       maxValue: 3331.69,
       klass: 'quote-up'
+    }))
+  })
+
+  it('candle data format', () => {
+    const data = [{
+      begins_at: "2015-04-24T00:00:00Z",
+      open_price: "128.1151",
+      close_price: "127.9089",
+      high_price: "128.2525",
+      low_price: "126.8780",
+      volume: 44525905,
+      interpolated: false
+    },
+    {
+      begins_at: "2015-04-27T00:00:00Z",
+      open_price: "129.9020",
+      close_price: "130.2358",
+      high_price: "130.7070",
+      low_price: "128.7631",
+      volume: 96954207,
+      interpolated: false
+    },
+    {
+      begins_at: "2015-04-28T00:00:00Z",
+      open_price: "132.0079",
+      close_price: "128.1838",
+      high_price: "132.0914",
+      low_price: "127.2118",
+      volume: 118923970,
+      interpolated: false
+    }],
+    testData = {
+      data: data,
+      prevClose: 1234.56,
+      displayPrevClose: true,
+      selector: '.chart-placeholder',
+      width: 480,
+      height: 250
+    }
+    expect(parseData(testData, 'candle')).toEqual(({
+      data: [{
+        begins_at: "2015-04-24T00:00:00Z",
+        open_price: 128.1151,
+        close_price: 127.9089,
+        high_price: 128.2525,
+        low_price: 126.8780,
+        volume: 44525905,
+        interpolated: false
+      },
+      {
+        begins_at: "2015-04-27T00:00:00Z",
+        open_price: 129.9020,
+        close_price: 130.2358,
+        high_price: 130.7070,
+        low_price: 128.7631,
+        volume: 96954207,
+        interpolated: false
+      },
+      {
+        begins_at: "2015-04-28T00:00:00Z",
+        open_price: 132.0079,
+        close_price: 128.1838,
+        high_price: 132.0914,
+        low_price: 127.2118,
+        volume: 118923970,
+        interpolated: false
+      }],
+      minValue: 127.9089,
+      maxValue: 1234.56,
+      klass: 'quote-down'
     }))
   })
 })

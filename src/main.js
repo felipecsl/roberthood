@@ -31,6 +31,7 @@ function main(sources) {
     HTTP: Content.HTTP,
     state$: state$.startWith(state)
       .do(s => {
+        console.log(s)
         if (typeof window !== 'undefined') {
           window.localStorage.setObject("state", s)
         }

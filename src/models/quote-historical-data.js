@@ -31,12 +31,12 @@ export default class QuoteHistoricalData extends HistoricalData {
     const intraday$ = Observable.combineLatest(
       dataInterval$.filter(i => i === '1D'),
       filteredModel$,
-      (i, p) => new QuoteHistoricalData(p.intradayHistoricals, i).data(p.instrument, 480, 250))
+      (i, p) => new QuoteHistoricalData(p.intradayHistoricals, i).data(p.instrument, 720, 300))
 
     const daily$ = Observable.combineLatest(
       dataInterval$.filter(i => i !== '1D'),
       filteredModel$,
-      (i, p) => new QuoteHistoricalData(p.dailyHistoricals, i).data(p.instrument, 480, 250))
+      (i, p) => new QuoteHistoricalData(p.dailyHistoricals, i).data(p.instrument, 720, 300))
 
     return Observable.merge(intraday$, daily$)
   }
