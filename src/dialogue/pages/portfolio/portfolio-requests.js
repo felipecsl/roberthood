@@ -87,7 +87,9 @@ const requests = (model$, dataInterval$) => {
       .flatMap(h => _quotesHistoricals$(h.positions, h.token, i))
     ).flatMap(x => x)
   const historicals$ = Observable.from(['1D', '1M'])
-    .map(i => model$.filter(m => helpers.isFullyLoaded(m) && m.intradayHistoricals === undefined)
+    .map(i => model$.filter(m => helpers.isFullyLoaded(m)
+        && m.portfolio.intradayHistoricals === undefined
+        && m.portfolio.dailyHistoricals === undefined)
       .take(1)
       .flatMap(h => _historicals$(h.account, h.token, i))
     ).flatMap(x => x)

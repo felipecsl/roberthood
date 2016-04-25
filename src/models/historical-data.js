@@ -32,4 +32,8 @@ export default class HistoricalData {
   filterDataByInterval(data = this.rawData) {
     return data.filter(h => moment(h.begins_at) > this.intervalStrToMoment())
   }
+
+  isIntradayInterval() {
+    return this.interval === '1D'
+  }
 }

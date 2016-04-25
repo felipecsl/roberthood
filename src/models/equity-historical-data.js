@@ -6,21 +6,21 @@ export default class EquityHistoricalData extends HistoricalData {
   static stream$(model$, dataInterval$) {
     const intraday$ = Observable.combineLatest(
       dataInterval$.filter(i => i === '1D'),
-      model$.filter(m => m.intradayHistoricals !== undefined).map(state => state.intradayHistoricals),
-      (i, d) => new EquityHistoricalData(d, i).data())
+      model$.filter(m => m.portfolio !== undefined && m.portfolio.intradayHistoricals !== undefined),
+      (i, d) => new EquityHistoricalData(d, i).data(d.portfolio.adjusted_equity_previous_close))
 
     const daily$ = Observable.combineLatest(
       dataInterval$.filter(i => i !== '1D'),
-      model$.filter(m => m.dailyHistoricals !== undefined).map(state => state.dailyHistoricals),
+      model$.filter(m => m.portfolio !== undefined && m.portfolio.dailyHistoricals !== undefined),
       (i, d) => new EquityHistoricalData(d, i).data())
 
     return Observable.merge(intraday$, daily$)
   }
 
-  data() {
+  data(previous_close) {
     return ({
       data: this.dataPoints(),
-      prevClose: this.rawData.adjusted_equity_previous_close,
+      prevClose: previous_close,
       displayPrevClose: super.displayPrevClose(),
       selector: '.chart-placeholder',
       width: 480,
@@ -36,16 +36,20 @@ export default class EquityHistoricalData extends HistoricalData {
 
   absChange() {
     const lastCoreEquity = this.rawData.portfolio.last_core_equity
-    if (this.interval === '1D') {
+    if (super.isIntradayInterval()) {
       return lastCoreEquity - this.rawData.portfolio.adjusted_equity_previous_close
     } else {
-      const data = super.filterDataByInterval(this.rawData.dailyHistoricals)
+      const data = super.filterDataByInterval(this.rawData.portfolio.dailyHistoricals)
       return lastCoreEquity - data[0].adjusted_open_equity
     }
   }
 
   dataPoints() {
-    return super.filterDataByInterval().map(d => {
+    const dataToFilter = (super.isIntradayInterval()
+      ? this.rawData.portfolio.intradayHistoricals
+      : this.rawData.portfolio.dailyHistoricals)
+
+    return super.filterDataByInterval(dataToFilter).map(d => {
       d.open_price = d.adjusted_open_equity
       d.close_price = d.adjusted_close_equity
       return d
