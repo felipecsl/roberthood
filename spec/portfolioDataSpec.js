@@ -21,7 +21,7 @@ describe('Portfolio Data', () => {
         const dataInterval$ = Observable.just('1Y')
         const data$ = PortfolioData(model$, dataInterval$)
         data$.subscribe(d => {
-          expect(d.prevClose).toEqual(0)
+          expect(d.prevClose).toBeUndefined()
           expect(d.displayPrevClose).toEqual(false)
           expect(d.selector).toEqual('.chart-placeholder')
           expect(d.width).toEqual(480)
