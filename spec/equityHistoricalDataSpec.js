@@ -19,8 +19,8 @@ describe('Equity Historical Data', () => {
       data.forEach((e, i) =>
         e.begins_at = moment().subtract(data.length - 1 - i, 'day').format(dateFormat))
       const historicalData = new EquityHistoricalData({
-        dailyHistoricals: data,
         portfolio: {
+          dailyHistoricals: data,
           last_core_equity: data[data.length - 1].adjusted_close_equity,
         }
       }, '1Y')
@@ -31,8 +31,8 @@ describe('Equity Historical Data', () => {
       data.forEach((e, i) =>
         e.begins_at = moment().subtract(data.length - 1 - i, 'day').format(dateFormat))
       const historicalData = new EquityHistoricalData({
-        dailyHistoricals: data,
         portfolio: {
+          dailyHistoricals: data,
           last_core_equity: data[data.length - 1].adjusted_close_equity,
         }
       }, '1Y')
@@ -45,8 +45,8 @@ describe('Equity Historical Data', () => {
       data.forEach((e, i) =>
         e.begins_at = moment().subtract(data.length - 1 - i, 'hour').format(dateFormat))
       const historicalData = new EquityHistoricalData({
-        dailyHistoricals: data,
         portfolio: {
+          intradayHistoricals: data,
           adjusted_equity_previous_close: "2000",
           last_core_equity: "2500",
         }
@@ -58,13 +58,26 @@ describe('Equity Historical Data', () => {
       data.forEach((e, i) =>
         e.begins_at = moment().subtract(data.length - 1 - i, 'hour').format(dateFormat))
         const historicalData = new EquityHistoricalData({
-          dailyHistoricals: data,
           portfolio: {
+            intradayHistoricals: data,
             adjusted_equity_previous_close: "2000",
             last_core_equity: "2500",
           }
         }, '1D')
       expect(toFixed(historicalData.absChange(), 2)).toEqual("500.00")
+    })
+
+    it('prevClose', () => {
+      data.forEach((e, i) =>
+        e.begins_at = moment().subtract(data.length - 1 - i, 'hour').format(dateFormat))
+      const historicalData = new EquityHistoricalData({
+        portfolio: {
+          intradayHistoricals: data,
+          adjusted_equity_previous_close: "12345",
+          last_core_equity: data[data.length - 1].adjusted_close_equity,
+        }
+      }, '1D')
+      expect(historicalData.data("12345").prevClose).toEqual("12345")
     })
   })
 })

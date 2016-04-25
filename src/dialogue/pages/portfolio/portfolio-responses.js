@@ -30,9 +30,7 @@ const portfolioIntradayHistoricals$ = (request$, state$) => filterByCategory(req
   .filter(res => res.request.span === 'day')
   .map(res => res.body.equity_historicals)
   .flatMap(res => state$.take(1).map((state) => {
-    state.intradayHistoricals = res
-    state.intradayHistoricals.adjusted_equity_previous_close =
-      state.portfolio.adjusted_equity_previous_close
+    state.portfolio.intradayHistoricals = res
     return state
   }))
 
@@ -40,11 +38,7 @@ const portfolioDailyHistoricals$ = (request$, state$) => filterByCategory(reques
   .filter(res => res.request.span === 'year')
   .map(res => res.body.equity_historicals)
   .flatMap(res => state$.take(1).map((state) => {
-    state.dailyHistoricals = res
-    // TODO: This is awkward: We're assigning a property to an Array type. This is likely gonna
-    // cause problems. Need to fix this.
-    state.dailyHistoricals.adjusted_equity_previous_close =
-      state.portfolio.adjusted_equity_previous_close
+    state.portfolio.dailyHistoricals = res
     return state
   }))
 

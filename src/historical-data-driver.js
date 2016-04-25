@@ -13,8 +13,8 @@ const parseData = (chartData) => {
 
   return {
     data: formattedData,
-    minValue: Math.min(chartData.prevClose, Math.min(...formattedData)),
-    maxValue: Math.max(chartData.prevClose, Math.max(...formattedData)),
+    minValue: Math.min(chartData.prevClose || Number.MAX_VALUE, Math.min(...formattedData)),
+    maxValue: Math.max(chartData.prevClose || Number.MIN_VALUE, Math.max(...formattedData)),
     klass: isTrendingUp ? 'quote-up' : 'quote-down'
   }
 }
@@ -55,8 +55,8 @@ const makeHistoricalDataDriver = () => {
           .attr("transform", `translate(${margin.left},${margin.top})`)
       if (chartData.displayPrevClose) {
         svg.append('path')
-              .attr("class", "reference")
-              .attr('d', horizLine([prevClose, prevClose]))
+            .attr("class", "reference")
+            .attr('d', horizLine([prevClose, prevClose]))
       }
       svg.append('path')
           .attr("class", `line ${metadata.klass}`)

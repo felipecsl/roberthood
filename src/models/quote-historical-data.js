@@ -48,7 +48,7 @@ export default class QuoteHistoricalData extends HistoricalData {
 
   absChange() {
     const lastTradePrice = this.rawData.instrument.quote.last_trade_price
-    if (this.interval === '1D') {
+    if (super.isIntradayInterval()) {
       return lastTradePrice - this.rawData.instrument.quote.previous_close
     } else {
       const data = super.filterDataByInterval(this.rawData.dailyHistoricals)

@@ -11,16 +11,30 @@ import {div, h1} from '@cycle/dom'
 function main(sources) {
   const Content = ContentRouter(sources)
   const {path$, state$} = Content
-  let savedToken = window.localStorage.getItem("token")
 
-  if (savedToken === 'undefined' || savedToken === null) {
-    savedToken = undefined
+  Storage.prototype.setObject = function(key, value) {
+    this.setItem(key, JSON.stringify(value))
+  }
+
+  Storage.prototype.getObject = function(key) {
+    const value = this.getItem(key)
+    return value && JSON.parse(value)
+  }
+
+  let state = window.localStorage.getObject("state")
+  if (state === 'undefined' || state === null) {
+    state = {}
   }
 
   return {
     DOM: Content.DOM,
     HTTP: Content.HTTP,
-    state$: state$.startWith({ user: ({}), token: savedToken }),
+    state$: state$.startWith(state)
+      .do(s => {
+        if (typeof window !== 'undefined') {
+          window.localStorage.setObject("state", s)
+        }
+      }),
     historicalData: Content.historicalData
   }
 }
