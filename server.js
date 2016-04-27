@@ -37,7 +37,7 @@ function proxyRequest(options, res) {
       res.status(response.statusCode).send(body);
     } else {
       console.log("Request error: " + body)
-      res.status(response.statusCode).send(error);
+      res.status(response.statusCode).send(body);
     }
   });
 }

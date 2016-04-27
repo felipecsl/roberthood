@@ -1,6 +1,6 @@
 import {Observable} from 'rx'
 import {div, p, h, h1, ul, li, a} from '@cycle/dom'
-import helpers from '../../../helpers'
+import {chartClass} from '../../../helpers'
 import QuoteHistoricalData from '../../../models/quote-historical-data'
 import {formatMoney, toFixed} from 'accounting'
 
@@ -11,7 +11,7 @@ const view = (state$, dataInterval$, router) => {
     const quoteHistoricalData = new QuoteHistoricalData(position, di)
     const absChange = quoteHistoricalData.absChange()
     const percentChange = quoteHistoricalData.percentChange()
-    const quoteClass = helpers.chartClass(absChange)
+    const quoteClass = chartClass(absChange)
     return div([
         div([
           h(`.paper-card-fake`, [

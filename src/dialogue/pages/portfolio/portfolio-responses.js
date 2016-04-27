@@ -1,4 +1,4 @@
-import helpers from '../../../helpers'
+import {instrumentIdFromUrl} from '../../../helpers'
 
 function filterByCategory(request$, category) {
   return request$.flatMap(x => x)
@@ -45,7 +45,7 @@ const portfolioDailyHistoricals$ = (request$, state$) => filterByCategory(reques
 const positions$ = (request$, state$) => filterByCategory(request$, 'positions')
   .map(res => res.body.results)
   .map(results => results.map(pos => {
-    pos.instrumentId = helpers.instrumentIdFromUrl(pos.instrument)
+    pos.instrumentId = instrumentIdFromUrl(pos.instrument)
     return pos
   }))
   .flatMap(res => state$.take(1).map((state) => {

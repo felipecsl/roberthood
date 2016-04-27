@@ -1,6 +1,6 @@
-import {div, p, h, h1, ul, li, a} from '@cycle/dom'
+import {div, p, h, h1, h3, ul, li, a} from '@cycle/dom'
 import {formatMoney, toFixed} from 'accounting'
-import helpers from '../../../helpers'
+import {isLoggedIn, isFullyLoaded, chartClass, formatShares} from '../../../helpers'
 import EquityHistoricalData from '../../../models/equity-historical-data'
 import QuoteHistoricalData from '../../../models/quote-historical-data'
 import {Observable} from 'rx'
@@ -8,13 +8,19 @@ import {Observable} from 'rx'
 const view = (state$, dataInterval$, router) => {
   const { createHref } = router
   return Observable.combineLatest(state$, dataInterval$, (s, di) => {
-    if (!helpers.isFullyLoaded(s)) {
+    if (!isLoggedIn(s)) {
+      return p([
+        a({href: createHref('/')}, "Please sign in in order to access this page.")
+      ])
+    }
+    if (!isFullyLoaded(s)) {
       return h('paper-spinner-lite', { className: 'green', attributes: { active: '' }})
     }
+
     const equityHistoricalData = new EquityHistoricalData(s, di),
           absChange = equityHistoricalData.absChange(),
           percentChange = equityHistoricalData.percentChange(),
-          equityClass = helpers.chartClass(absChange)
+          equityClass = chartClass(absChange)
     // Use a fake paper-card component since virtual-dom doesn't handle well changes to Polymer's
     // paper-card, probably since it generates DOM elements dynamically and it confuses virtual-dom
     return div(`.portfolio-layout`, [
@@ -33,7 +39,7 @@ const view = (state$, dataInterval$, router) => {
           div('.portfolio-items', { attributes: { role: 'listbox' }}, s.positions.map(position => {
             const quoteData = new QuoteHistoricalData(position, di),
                   quoteAbsChange = quoteData.absChange(),
-                  quoteClass = helpers.chartClass(quoteAbsChange)
+                  quoteClass = chartClass(quoteAbsChange)
             return h('paper-item', [
               h('paper-item-body', { attributes: { 'two-line': '' }}, [
                 a({href: createHref(`/positions/${position.instrument.symbol}`)}, [
@@ -44,7 +50,7 @@ const view = (state$, dataInterval$, router) => {
                     ])
                   ]),
                   div({ attributes: { secondary: '' }}, [
-                    `${helpers.formatShares(position.quantity)} Shares`,
+                    `${formatShares(position.quantity)} Shares`,
                     h(`small .right .${quoteClass}`,
                       `${formatMoney(quoteAbsChange)} (${toFixed(quoteData.percentChange(), 2)}%)`)
                   ]),

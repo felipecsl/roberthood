@@ -1,5 +1,5 @@
 import {Observable} from 'rx'
-import helpers from '../../../helpers'
+import {instrumentIdFromUrl} from '../../../helpers'
 
 export default (model$) => {
   const orders$ = model$.filter(m => m.token !== undefined && m.orders === undefined)
@@ -18,7 +18,7 @@ export default (model$) => {
     .flatMap(m => m.orders.map(o => ({
       method: 'GET',
       eager: true,
-      url: `/instruments/${helpers.instrumentIdFromUrl(o.instrument)}?token=${m.token}`,
+      url: `/instruments/${instrumentIdFromUrl(o.instrument)}?token=${m.token}`,
       orderId: o.id,
       category: 'orderInstrument',
     })))

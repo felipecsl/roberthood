@@ -30,7 +30,11 @@ function main(sources) {
     HTTP: Content.HTTP,
     state$: state$.startWith(state)
       .do(s => {
-        if (typeof window !== 'undefined') {
+        if (typeof window !== 'undefined' && s !== undefined) {
+          if (s.error) {
+            // delete transient error messages
+            delete s.error
+          }
           window.localStorage.setObject("state", s)
         }
       }),

@@ -103,7 +103,7 @@ h1.equity {
 
 a {
   color: inherit;
-  text-decoration: none;
+  /*text-decoration: none;*/
 }
 
 .chart-interval {

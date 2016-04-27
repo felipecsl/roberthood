@@ -1,5 +1,5 @@
 import {Observable} from 'rx'
-import helpers from '../../../helpers'
+import {isFullyLoaded} from '../../../helpers'
 
 const _account$ = ({token}) => [({
   method: 'GET',
@@ -69,7 +69,7 @@ const _historicals$ = (account, token, intervalStr) => Observable.just({
 
 const requests = (model$, dataInterval$) => {
   // This prevents us from requesting all over again when the state is already fully loaded
-  const notLoadedModel$ = model$.filter(m => !helpers.isFullyLoaded(m))
+  const notLoadedModel$ = model$.filter(m => !isFullyLoaded(m))
   const account$ = notLoadedModel$.filter(m => m.token !== undefined)
     .take(1).flatMap(_account$)
   const portfolio$ = notLoadedModel$.filter(m => m.account !== undefined)
@@ -87,7 +87,7 @@ const requests = (model$, dataInterval$) => {
       .flatMap(h => _quotesHistoricals$(h.positions, h.token, i))
     ).flatMap(x => x)
   const historicals$ = Observable.from(['1D', '1M'])
-    .map(i => model$.filter(m => helpers.isFullyLoaded(m)
+    .map(i => model$.filter(m => isFullyLoaded(m)
         && m.portfolio.intradayHistoricals === undefined
         && m.portfolio.dailyHistoricals === undefined)
       .take(1)
