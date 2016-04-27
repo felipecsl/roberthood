@@ -3,8 +3,9 @@ import {formatMoney, toFixed} from 'accounting'
 
 const view = (state$) => {
   return state$.take(1).map(s => {
-    return div([
-      h('paper-card.account', { heading: 'Account' }, [
+    return div(`.account-layout`, [
+      h('.paper-card-fake.account', [
+        h1('.center', 'Account'),
         h('.card-content', [
           div(`.pane`, [
             h3(`${formatMoney(s.portfolio.last_core_equity)}`),

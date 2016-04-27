@@ -115,8 +115,8 @@ const makeHistoricalDataDriver = () => {
           .enter()
           .append("rect")
           .attr("class", (d) => `candle ${candleClass(d)}`)
-          .attr("x", (d, i) => (i * candleWidth) + 0.5)
-          .attr("y", (d) => y(Math.max(d.open_price, d.close_price)) + 0.5)
+          .attr("x", (d, i) => (i * candleWidth))
+          .attr("y", (d) => y(Math.max(d.open_price, d.close_price)))
           .attr("width", (d) => candleWidth)
           .attr("height", (d) => candleHeight(d))
       }

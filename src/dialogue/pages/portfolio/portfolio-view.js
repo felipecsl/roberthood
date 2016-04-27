@@ -17,7 +17,7 @@ const view = (state$, dataInterval$, router) => {
           equityClass = helpers.chartClass(absChange)
     // Use a fake paper-card component since virtual-dom doesn't handle well changes to Polymer's
     // paper-card, probably since it generates DOM elements dynamically and it confuses virtual-dom
-    return div([
+    return div(`.portfolio-layout`, [
       h(`.paper-card-fake`, [
         div('.heading', [
           h1('Portfolio')

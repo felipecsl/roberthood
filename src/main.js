@@ -25,13 +25,11 @@ function main(sources) {
   if (state === 'undefined' || state === null) {
     state = {}
   }
-
   return {
     DOM: Content.DOM,
     HTTP: Content.HTTP,
     state$: state$.startWith(state)
       .do(s => {
-        console.log(s)
         if (typeof window !== 'undefined') {
           window.localStorage.setObject("state", s)
         }
