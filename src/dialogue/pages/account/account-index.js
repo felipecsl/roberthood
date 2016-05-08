@@ -8,7 +8,7 @@ const Account = (sources) => {
     DOM: view$,
     HTTP: Observable.empty(),
     state$: sources.state$,
-    historicalData: sources.historicalData
+    historicalData: Observable.empty(),
   }
 }
 

@@ -20,28 +20,24 @@ const routes = {
 
 function ContentRouter(sources) {
   logger.log('ContentRouter#init')
-  // const {router, state$} = sources
-  // const match$ = router.define(routes)
-  // const childrenSinks$ = match$.map(({path, value}) => {
-  //   console.log('router#match')
-  //   return value({
-  //     ...sources,
-  //     state$: state$.take(1),
-  //   })
-  // })
-
-  // return {
-  //   DOM: childrenSinks$.flatMapLatest(s => s.DOM),
-  //   HTTP: childrenSinks$.flatMapLatest(s => s.HTTP),
-  //   historicalData: childrenSinks$.flatMapLatest(s => s.historicalData),
-  //   state$: childrenSinks$.flatMapLatest(s => s.state$),
-  //   globalActions$: childrenSinks$.flatMapLatest(s => s.globalActions$),
-  //   path$: match$.pluck('path'),
-  // }
-  return Portfolio({
-    ...sources,
-    state$: sources.state$.take(1)
+  const {router, state$} = sources
+  const match$ = router.define(routes)
+  const childrenSinks$ = match$.map(({value}) => {
+    console.log('router#match')
+    return value({
+      ...sources,
+      state$: state$.take(1),
+    })
   })
+
+  return {
+    DOM: childrenSinks$.flatMapLatest(s => s.DOM),
+    HTTP: childrenSinks$.flatMapLatest(s => s.HTTP),
+    historicalData: childrenSinks$.flatMapLatest(s => s.historicalData || Observable.empty()),
+    state$: childrenSinks$.flatMapLatest(s => s.state$),
+    globalActions$: childrenSinks$.flatMapLatest(s => s.globalActions$ || Observable.empty()),
+    path$: match$.pluck('path'),
+  }
 }
 
 export default ContentRouter

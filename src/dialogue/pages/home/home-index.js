@@ -1,6 +1,7 @@
 import view from './home-view'
 import intent from './home-intent'
 import model from './home-model'
+import {Observable} from 'rx'
 
 const Home = (sources) => {
   console.log('Home#index')
@@ -18,8 +19,8 @@ const Home = (sources) => {
     DOM: view(sources, token$),
     HTTP: request$,
     state$: token$,
-    historicalData: sources.historicalData,
-    globalActions$: sources.globalActions$
+    historicalData: Observable.empty(),
+    globalActions$: Observable.empty()
   }
 }
 
