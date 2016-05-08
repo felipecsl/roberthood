@@ -1,5 +1,5 @@
-import {Observable} from 'rx'
 import d3 from 'd3'
+import logger from './logger'
 
 const formatLineData = (data) => data
   .map(d => [d.open_price, d.close_price])
@@ -52,6 +52,7 @@ const parseLineData = (chartData) => {
 
 const makeHistoricalDataDriver = () => {
   return (sink$) => {
+    logger.log("HistoricalDataDriver - Subscribing to sink: ", sink$)
     sink$.subscribe(chartData => {
       const type = 'line', // or candle
         metadata = parseData(chartData, type),
@@ -65,12 +66,6 @@ const makeHistoricalDataDriver = () => {
         y = d3.scale.linear()
           .domain([metadata.minValue, metadata.maxValue])
           .range([height, 0]),
-        xAxis = d3.svg.axis()
-          .scale(x)
-          .orient("bottom"),
-        yAxis = d3.svg.axis()
-          .scale(y)
-          .orient("left"),
         line = d3.svg.line()
           .x((d, i) => x(i))
           .y(d => y(d)),
@@ -121,7 +116,6 @@ const makeHistoricalDataDriver = () => {
           .attr("height", (d) => candleHeight(d))
       }
     })
-    return Observable.empty()
   }
 }
 

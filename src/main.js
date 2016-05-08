@@ -1,8 +1,16 @@
-import {Observable} from 'rx'
 import ContentRouter from './dialogue/components/content-router/content-router-index'
-// @cycle/dom has a hyperscript-helper built in so you can
-// declare all html elements you are going to use like div, h1, h2, nav etc
 import {div, h1} from '@cycle/dom'
+import logger from './logger'
+import moment from 'moment'
+
+Storage.prototype.setObject = function(key, value) {
+  this.setItem(key, JSON.stringify(value))
+}
+
+Storage.prototype.getObject = function(key) {
+  const value = this.getItem(key)
+  return value && JSON.parse(value)
+}
 
 // we need to pass our components to cycle and give them a "source" when they come from cycle
 // creating this "cycle", here you can see that view$ is a Rx Observable containing out "view"
@@ -10,35 +18,36 @@ import {div, h1} from '@cycle/dom'
 // variables. We return all of this in an Object with DOM + History
 function main(sources) {
   const Content = ContentRouter(sources)
-  const {path$, state$} = Content
-
-  Storage.prototype.setObject = function(key, value) {
-    this.setItem(key, JSON.stringify(value))
-  }
-
-  Storage.prototype.getObject = function(key) {
-    const value = this.getItem(key)
-    return value && JSON.parse(value)
-  }
 
   let state = window.localStorage.getObject("state")
   if (state === 'undefined' || state === null) {
     state = {}
   }
+
+  const persistState = (s) => {
+    if (typeof window !== 'undefined' && s !== undefined) {
+      if (s.error) {
+        // delete transient error messages
+        delete s.error
+      }
+      logger.log("MAIN - saving new state with=", s)
+      window.localStorage.setObject("state", s)
+    }
+  }
+
+  // Since we treat the state as a hot Observable, we need to delay its initial state a little bit
+  // until the entire chain is set up, otherwise it will be emitted before we had a chance to
+  // see it.
+  const state$ = Content.state$.doOnNext(persistState)
+    .startWith(state)
+    .delay(moment().add(100, 'millisecond').toDate())
+
   return {
     DOM: Content.DOM,
     HTTP: Content.HTTP,
-    state$: state$.startWith(state)
-      .do(s => {
-        if (typeof window !== 'undefined' && s !== undefined) {
-          if (s.error) {
-            // delete transient error messages
-            delete s.error
-          }
-          window.localStorage.setObject("state", s)
-        }
-      }),
-    historicalData: Content.historicalData
+    state$: state$,
+    historicalData: Content.historicalData,
+    globalActions$: Content.globalActions$
   }
 }
 

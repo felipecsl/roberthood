@@ -6,6 +6,7 @@ import Buy from '../../pages/buy/buy-index'
 import Orders from '../../pages/orders/orders-index'
 import Page404 from '../../pages/page404/page404-index'
 import {Observable} from 'rx'
+import logger from '../../../logger'
 
 const routes = {
   '/': Home,
@@ -18,31 +19,29 @@ const routes = {
 }
 
 function ContentRouter(sources) {
-  const {router, state$} = sources
-  const match$ = router.define(routes)
-  const childrenDOM$ = match$.map(({path, value}) => {
-      const comp = value({
-        ...sources,
-        router: router,
-        state$: state$.take(1),
-      })
-      return {
-        DOM: comp.DOM,
-        HTTP: comp.HTTP,
-        state$: comp.state$,
-        historicalData: comp.historicalData,
-      }
-    }
-  )
+  logger.log('ContentRouter#init')
+  // const {router, state$} = sources
+  // const match$ = router.define(routes)
+  // const childrenSinks$ = match$.map(({path, value}) => {
+  //   console.log('router#match')
+  //   return value({
+  //     ...sources,
+  //     state$: state$.take(1),
+  //   })
+  // })
 
-
-  return {
-    DOM: childrenDOM$.flatMapLatest(s => s.DOM),
-    HTTP: childrenDOM$.flatMapLatest(s => s.HTTP),
-    historicalData: childrenDOM$.flatMapLatest(s => s.historicalData),
-    state$: childrenDOM$.flatMapLatest(s => s.state$),
-    path$: match$.pluck('path'),
-  }
+  // return {
+  //   DOM: childrenSinks$.flatMapLatest(s => s.DOM),
+  //   HTTP: childrenSinks$.flatMapLatest(s => s.HTTP),
+  //   historicalData: childrenSinks$.flatMapLatest(s => s.historicalData),
+  //   state$: childrenSinks$.flatMapLatest(s => s.state$),
+  //   globalActions$: childrenSinks$.flatMapLatest(s => s.globalActions$),
+  //   path$: match$.pluck('path'),
+  // }
+  return Portfolio({
+    ...sources,
+    state$: sources.state$.take(1)
+  })
 }
 
 export default ContentRouter

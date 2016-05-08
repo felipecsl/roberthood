@@ -6,12 +6,12 @@ export default class EquityHistoricalData extends HistoricalData {
   static stream$(model$, dataInterval$) {
     const intraday$ = Observable.combineLatest(
       dataInterval$.filter(i => i === '1D'),
-      model$.filter(m => m.portfolio !== undefined && m.portfolio.intradayHistoricals !== undefined),
+      model$.filter(m => m.portfolio && m.portfolio.intradayHistoricals),
       (i, d) => new EquityHistoricalData(d, i).data(d.portfolio.adjusted_equity_previous_close))
 
     const daily$ = Observable.combineLatest(
       dataInterval$.filter(i => i !== '1D'),
-      model$.filter(m => m.portfolio !== undefined && m.portfolio.dailyHistoricals !== undefined),
+      model$.filter(m => m.portfolio && m.portfolio.dailyHistoricals),
       (i, d) => new EquityHistoricalData(d, i).data())
 
     return Observable.merge(intraday$, daily$)
