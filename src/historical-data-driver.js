@@ -90,7 +90,9 @@ const makeHistoricalDataDriver = () => {
             .attr("class", `line ${metadata.klass}`)
             .attr("d", line(metadata.data))
       } else if (type === 'candle') {
-        const candleWidth = (width - margin.left - margin.right) / metadata.data.length
+        const candleMargin = 4
+        const totalMargins = candleMargin * metadata.data.length
+        const candleWidth = (width - margin.left - margin.right - totalMargins) / metadata.data.length
         const candleHeight = (d) =>
           Math.abs(y(Math.min(d.open_price, d.close_price)) - y(Math.max(d.open_price, d.close_price)))
         const candleClass = (d) => d.open_price < d.close_price ? 'quote-up' : 'quote-down'
@@ -99,8 +101,8 @@ const makeHistoricalDataDriver = () => {
           .enter()
           .append("line")
           .attr("class", "stem")
-          .attr("x1", (d, i) => (i * candleWidth) + candleWidth / 2)
-          .attr("x2", (d, i) => (i * candleWidth) + candleWidth / 2)
+          .attr("x1", (d, i) => (i * candleWidth) + (i * candleMargin) + candleWidth / 2)
+          .attr("x2", (d, i) => (i * candleWidth) + (i * candleMargin) + candleWidth / 2)
           .attr("y1", (d) => y(d.high_price))
           .attr("y2", (d) => y(d.low_price))
           .attr("stroke", (d) => 'black')
@@ -110,7 +112,7 @@ const makeHistoricalDataDriver = () => {
           .enter()
           .append("rect")
           .attr("class", (d) => `candle ${candleClass(d)}`)
-          .attr("x", (d, i) => (i * candleWidth))
+          .attr("x", (d, i) => (i * candleWidth) + (i * candleMargin))
           .attr("y", (d) => y(Math.max(d.open_price, d.close_price)))
           .attr("width", (d) => candleWidth)
           .attr("height", (d) => candleHeight(d))
