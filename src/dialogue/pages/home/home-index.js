@@ -1,10 +1,11 @@
 import view from './home-view'
 import intent from './home-intent'
 import model from './home-model'
+import {Observable} from 'rx'
 
 const Home = (sources) => {
-  const {state$} = sources
-  const actions = intent(sources)
+  console.log('Home#index')
+  const actions = intent(sources).do(s => console.log("HOME INDEX - onLogin"))
   const token$ = model(sources)
   const request$ = actions.map(data => ({
     url: '/auth',
@@ -18,7 +19,8 @@ const Home = (sources) => {
     DOM: view(sources, token$),
     HTTP: request$,
     state$: token$,
-    historicalData: sources.historicalData
+    historicalData: Observable.empty(),
+    globalActions$: Observable.empty()
   }
 }
 

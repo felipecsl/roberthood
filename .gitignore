@@ -14,3 +14,4 @@ build
 temp
 test/bundle.js
 .DS_Store
+.idea

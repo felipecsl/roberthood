@@ -1,10 +1,9 @@
 import {Observable} from 'rx'
-import moment from 'moment'
 import EquityHistoricalData from '../../../models/equity-historical-data'
 import QuoteHistoricalData from '../../../models/quote-historical-data'
+import logger from '../../../logger'
 
-const data$ = (model$, dataInterval$) => Observable.merge(
+export default (model$, dataInterval$) => Observable.merge(
   QuoteHistoricalData.stream$(model$, dataInterval$),
-  EquityHistoricalData.stream$(model$, dataInterval$))
-
-export default data$
+  EquityHistoricalData.stream$(model$, dataInterval$)
+).do(s => logger.log('PORTFOLIO DATA - updated with:', s))

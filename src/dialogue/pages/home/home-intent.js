@@ -4,6 +4,7 @@ const homeIntent = sources => {
   return sources.DOM.select('.login')
     .events('click')
     .debounce(500)
+    .do(s => console.log('HOME INTENT - login button clicked'))
     .flatMap(ev => Observable.zip(
       sources.DOM.select('.username')
         .observable

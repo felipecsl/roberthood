@@ -1,4 +1,13 @@
-import {div, h1, h2, button, h, form, a, p} from '@cycle/dom'
+import {
+  div, 
+  h1, 
+  h2, 
+  button, 
+  h, 
+  form, 
+  a, 
+  p
+} from '@cycle/dom'
 import {defined} from '../../../helpers'
 
 const view = (sources, state$) => {

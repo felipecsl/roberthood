@@ -1,5 +1,6 @@
 import {Observable} from 'rx'
 import {isFullyLoaded} from '../../../helpers'
+import logger from '../../../logger'
 
 const _account$ = ({token}) => [({
   method: 'GET',
@@ -13,24 +14,19 @@ const _account$ = ({token}) => [({
   category: 'account',
 })]
 
-const portfolio = (account_number, token) => ({
+const _portfolio$ = ({account, token}) => Observable.just({
   method: 'GET',
   eager: true,
-  url: `/accounts/${account_number}/portfolio?token=${token}`,
+  url: `/accounts/${account.account_number}/portfolio?token=${token}`,
   category: 'portfolio',
 })
 
-const positions = (account_number, token) => ({
+const _positions$ = ({account, token}) => Observable.just({
   method: 'GET',
   eager: true,
-  url: `/positions/${account_number}?token=${token}`,
+  url: `/positions/${account.account_number}?token=${token}`,
   category: 'positions',
 })
-
-const _portfolio$ = ({account, token}) => Observable.from([
-  portfolio(account.account_number, token),
-  positions(account.account_number, token)
-])
 
 const _instruments$$ = ({positions, token}) => positions.map(position => ({
   method: 'GET',
@@ -67,35 +63,44 @@ const _historicals$ = (account, token, intervalStr) => Observable.just({
   span: span(intervalStr),
 })
 
-const requests = (model$, dataInterval$) => {
+const requests = (model$) => {
   // This prevents us from requesting all over again when the state is already fully loaded
   const notLoadedModel$ = model$.filter(m => !isFullyLoaded(m))
-  const account$ = notLoadedModel$.filter(m => m.token !== undefined)
-    .take(1).flatMap(_account$)
-  const portfolio$ = notLoadedModel$.filter(m => m.account !== undefined)
-    .take(1).flatMap(_portfolio$)
-  const instruments$ = notLoadedModel$.filter(m => m.positions !== undefined)
-    .take(1).flatMap(_instruments$$)
-  const quotes$ = notLoadedModel$.filter(m => m.positions !== undefined)
+  const account$ = notLoadedModel$
+    .filter(m => m.token && !m.user && !m.account)
+    .flatMap(_account$)
+  const portfolio$ = notLoadedModel$
+    .filter(m => m.account && !m.portfolio && !m.positions)
+    .flatMap(_portfolio$)
+  const positions$ = notLoadedModel$
+    .filter(m => m.portfolio && !m.positions)
+    .flatMap(_positions$)
+  const instruments$ = notLoadedModel$
+    .filter(m => m.positions && m.positions.every(p => typeof p.instrument === 'string'))
+    .take(1)
+    .flatMap(_instruments$$)
+  const quotes$ = notLoadedModel$
+    .filter(m => m.positions !== undefined)
     .filter(m => m.positions.every(p => p.instrument.symbol !== undefined))
     .take(1).flatMap(_quotes$)
   const quotesHistoricals$ = Observable.from(['1D', '1M'])
     .map(i => model$.filter(m => m.positions !== undefined)
       .filter(m => m.positions.every(p => p.instrument.symbol !== undefined
-        && p.intradayHistoricals === undefined))
+        && !p.intradayHistoricals))
       .take(1)
       .flatMap(h => _quotesHistoricals$(h.positions, h.token, i))
     ).flatMap(x => x)
   const historicals$ = Observable.from(['1D', '1M'])
     .map(i => model$.filter(m => isFullyLoaded(m)
-        && m.portfolio.intradayHistoricals === undefined
-        && m.portfolio.dailyHistoricals === undefined)
+        && !m.portfolio.intradayHistoricals && !m.portfolio.dailyHistoricals)
       .take(1)
       .flatMap(h => _historicals$(h.account, h.token, i))
     ).flatMap(x => x)
+
   return Observable.merge(
     account$,
     portfolio$,
+    positions$,
     instruments$,
     quotes$,
     quotesHistoricals$,

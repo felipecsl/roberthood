@@ -1,11 +1,21 @@
-import {div, p, h, h1, h3, ul, li, a} from '@cycle/dom'
+import {
+  div,
+  p,
+  h,
+  h1,
+  h3,
+  ul,
+  li,
+  a
+} from '@cycle/dom'
 import {formatMoney, toFixed} from 'accounting'
 import {isLoggedIn, isFullyLoaded, chartClass, formatShares} from '../../../helpers'
 import EquityHistoricalData from '../../../models/equity-historical-data'
 import QuoteHistoricalData from '../../../models/quote-historical-data'
 import {Observable} from 'rx'
+import logger from '../../../logger'
 
-const view = (state$, dataInterval$, router) => {
+export default (state$, dataInterval$, router) => {
   const { createHref } = router
   return Observable.combineLatest(state$, dataInterval$, (s, di) => {
     if (!isLoggedIn(s)) {
@@ -14,13 +24,14 @@ const view = (state$, dataInterval$, router) => {
       ])
     }
     if (!isFullyLoaded(s)) {
+      logger.log("PORTFOLIO VIEW - not yet fully loaded")
       return h('paper-spinner-lite', { className: 'green', attributes: { active: '' }})
     }
 
-    const equityHistoricalData = new EquityHistoricalData(s, di),
-          absChange = equityHistoricalData.absChange(),
-          percentChange = equityHistoricalData.percentChange(),
-          equityClass = chartClass(absChange)
+    const equityHistoricalData = new EquityHistoricalData(s, di)
+    const absChange = equityHistoricalData.absChange()
+    const percentChange = equityHistoricalData.percentChange()
+    const equityClass = chartClass(absChange)
     // Use a fake paper-card component since virtual-dom doesn't handle well changes to Polymer's
     // paper-card, probably since it generates DOM elements dynamically and it confuses virtual-dom
     return div(`.portfolio-layout`, [
@@ -62,7 +73,5 @@ const view = (state$, dataInterval$, router) => {
         ])
       ])
     ])
-  })
+  }).do(s => logger.log("PORTFOLIO VIEW - event:", s))
 }
-
-export default view
