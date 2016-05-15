@@ -1,4 +1,4 @@
-import {Observable} from 'rx'
+import { Observable } from 'rx'
 import Home from '../src/dialogue/pages/home/home-index'
 import fakeSources from './support/fakeSources'
 
@@ -20,8 +20,8 @@ describe('Home', () => {
       // Dummy expectation to make Jasmine happy
       expect(true).toBe(true)
       done()
-    }, 990)
-  }, 1000)
+    }, 1990)
+  }, 2000)
 
   it('should retrieve user token from API response', (done) => {
     sources.HTTP.onNext(Observable.just({ body: { token: "foobarbaz" } }))
