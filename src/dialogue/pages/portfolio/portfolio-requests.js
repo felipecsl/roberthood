@@ -1,13 +1,13 @@
-import {Observable} from 'rx'
-import {isFullyLoaded} from '../../../helpers'
+import { Observable } from 'rx'
+import { isFullyLoaded } from '../../../helpers'
 import logger from '../../../logger'
 
-const _account$ = ({token}) => [({
+const _account$ = ({ token }) => [({
   method: 'GET',
   eager: true,
   url: `/user?token=${token}`,
   category: 'user',
-}),({
+}), ({
   method: 'GET',
   eager: true,
   url: `/accounts?token=${token}`,
@@ -82,7 +82,8 @@ const requests = (model$) => {
   const quotes$ = notLoadedModel$
     .filter(m => m.positions !== undefined)
     .filter(m => m.positions.every(p => p.instrument.symbol !== undefined))
-    .take(1).flatMap(_quotes$)
+    .take(1)
+    .flatMap(_quotes$)
   const quotesHistoricals$ = Observable.from(['1D', '1M'])
     .map(i => model$.filter(m => m.positions !== undefined)
       .filter(m => m.positions.every(p => p.instrument.symbol !== undefined

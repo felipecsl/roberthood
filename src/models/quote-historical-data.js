@@ -1,5 +1,5 @@
 import HistoricalData from './historical-data'
-import {Observable} from 'rx'
+import { Observable } from 'rx'
 
 export default class QuoteHistoricalData extends HistoricalData {
   /** Returns an Observable with a data stream for all instruments that are part of the portfolio */
@@ -26,7 +26,7 @@ export default class QuoteHistoricalData extends HistoricalData {
   /** Returns an Observable with a data stream for the currently selected instrument  */
   static streamCurrentInstrument$(model$, dataInterval$) {
     const filteredModel$ = model$.take(1)
-      .map(state => state.positions.find(p => p.instrument.symbol == state.currentInstrument))
+      .map(state => state.positions.find(p => p.instrument.symbol === state.currentInstrument))
 
     const intraday$ = Observable.combineLatest(
       dataInterval$.filter(i => i === '1D'),
@@ -50,10 +50,9 @@ export default class QuoteHistoricalData extends HistoricalData {
     const lastTradePrice = this.rawData.instrument.quote.last_trade_price
     if (super.isIntradayInterval()) {
       return lastTradePrice - this.rawData.instrument.quote.previous_close
-    } else {
-      const data = super.filterDataByInterval(this.rawData.dailyHistoricals)
-      return lastTradePrice - data[0].open_price
     }
+    const data = super.filterDataByInterval(this.rawData.dailyHistoricals)
+    return lastTradePrice - data[0].open_price
   }
 
   data(instrument, width = 120, height = 40) {
@@ -62,8 +61,8 @@ export default class QuoteHistoricalData extends HistoricalData {
       prevClose: instrument.quote.previous_close,
       displayPrevClose: super.displayPrevClose(),
       selector: `.quote-${instrument.symbol}-chart-placeholder`,
-      width: width,
-      height: height
+      width,
+      height,
     })
   }
 

@@ -21,8 +21,8 @@ const parseData = (chartData, type = 'line') =>
   type === 'line' ? parseLineData(chartData) : parseCandleData(chartData)
 
 const parseCandleData = (chartData) => {
-  const formattedData = formatCandleData(chartData.data),
-        isTrendingUp = (chartData.displayPrevClose
+  const formattedData = formatCandleData(chartData.data)
+  const isTrendingUp = (chartData.displayPrevClose
           ? formattedData[formattedData.length - 1].open_price > chartData.prevClose
           : formattedData[formattedData.length - 1].close_price > formattedData[0].close_price)
 
@@ -32,13 +32,13 @@ const parseCandleData = (chartData) => {
       Math.min(...formattedData.map(d => Math.min(d.open_price, d.close_price)))),
     maxValue: Math.max(chartData.prevClose || Number.MIN_VALUE,
       Math.max(...formattedData.map(d => Math.max(d.open_price, d.close_price)))),
-    klass: isTrendingUp ? 'quote-up' : 'quote-down'
+    klass: isTrendingUp ? 'quote-up' : 'quote-down',
   }
 }
 
 const parseLineData = (chartData) => {
-  const formattedData = formatLineData(chartData.data),
-        isTrendingUp = (chartData.displayPrevClose
+  const formattedData = formatLineData(chartData.data)
+  const isTrendingUp = (chartData.displayPrevClose
           ? formattedData[formattedData.length - 1] > chartData.prevClose
           : formattedData[formattedData.length - 1] > formattedData[0])
 
@@ -46,7 +46,7 @@ const parseLineData = (chartData) => {
     data: formattedData,
     minValue: Math.min(chartData.prevClose || Number.MAX_VALUE, Math.min(...formattedData)),
     maxValue: Math.max(chartData.prevClose || Number.MIN_VALUE, Math.max(...formattedData)),
-    klass: isTrendingUp ? 'quote-up' : 'quote-down'
+    klass: isTrendingUp ? 'quote-up' : 'quote-down',
   }
 }
 
@@ -54,22 +54,22 @@ const makeHistoricalDataDriver = () => {
   return (sink$) => {
     logger.log("HistoricalDataDriver - Subscribing to sink: ", sink$)
     sink$.subscribe(chartData => {
-      const type = 'line', // or candle
-        metadata = parseData(chartData, type),
-        prevClose = chartData.prevClose,
-        margin = {top: 1, right: 1, bottom: 1, left: 1},
-        width = chartData.width - margin.left - margin.right,
-        height = chartData.height - margin.top - margin.bottom,
-        x = d3.scale.linear()
+      const type = 'line' // or candle
+      const metadata = parseData(chartData, type)
+      const prevClose = chartData.prevClose
+      const margin = { top: 1, right: 1, bottom: 1, left: 1 }
+      const width = chartData.width - margin.left - margin.right
+      const height = chartData.height - margin.top - margin.bottom
+      const x = d3.scale.linear()
           .domain([0, metadata.data.length])
-          .range([0, width]),
-        y = d3.scale.linear()
+          .range([0, width])
+      const y = d3.scale.linear()
           .domain([metadata.minValue, metadata.maxValue])
-          .range([height, 0]),
-        line = d3.svg.line()
+          .range([height, 0])
+      const line = d3.svg.line()
           .x((d, i) => x(i))
-          .y(d => y(d)),
-        horizLine = d3.svg.line()
+          .y(d => y(d))
+      const horizLine = d3.svg.line()
           .x((d, i) => x(i * (metadata.data.length - 1)))
           .y(d => y(d))
       d3.selectAll(`${chartData.selector} > *`).remove()
@@ -121,4 +121,4 @@ const makeHistoricalDataDriver = () => {
   }
 }
 
-export {makeHistoricalDataDriver, parseData}
+export { makeHistoricalDataDriver, parseData }

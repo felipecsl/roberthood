@@ -1,13 +1,13 @@
 import {
   Observable,
-  ReplaySubject
+  ReplaySubject,
 } from 'rx'
 import responses from './portfolio-responses'
 import logger from '../../../logger'
 
 export default (globalActions$, request$, state$) => {
-  // GOTCHA: Use a Subject so we can have the model subscribe to itself. That's needed because an 
-  // update to the model may require new requests to be fired, specifically for when the user clicks 
+  // GOTCHA: Use a Subject so we can have the model subscribe to itself. That's needed because an
+  // update to the model may require new requests to be fired, specifically for when the user clicks
   // the reload button (globalActions$)
   const modelProxy$ = new ReplaySubject(1)
   const user$ = responses.user$(request$, modelProxy$)
@@ -22,8 +22,7 @@ export default (globalActions$, request$, state$) => {
   const quoteDailyHistoricals$ = responses.quoteDailyHistoricals$(request$, modelProxy$)
   const resetState$ = globalActions$.withLatestFrom(state$, (g, s) => {
     logger.log('PORTFOLIO MODEL - resetting state')
-    s = { token: s.token }
-    return s
+    return { token: s.token }
   })
   const model$ = Observable.merge(
     state$,

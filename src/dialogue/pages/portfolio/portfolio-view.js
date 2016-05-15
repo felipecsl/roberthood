@@ -3,16 +3,13 @@ import {
   p,
   h,
   h1,
-  h3,
-  ul,
-  li,
-  a
+  a,
 } from '@cycle/dom'
-import {formatMoney, toFixed} from 'accounting'
-import {isLoggedIn, isFullyLoaded, chartClass, formatShares} from '../../../helpers'
+import { formatMoney, toFixed } from 'accounting'
+import { isLoggedIn, isFullyLoaded, chartClass, formatShares } from '../../../helpers'
 import EquityHistoricalData from '../../../models/equity-historical-data'
 import QuoteHistoricalData from '../../../models/quote-historical-data'
-import {Observable} from 'rx'
+import { Observable } from 'rx'
 import logger from '../../../logger'
 
 export default (state$, dataInterval$, router) => {
@@ -20,12 +17,12 @@ export default (state$, dataInterval$, router) => {
   return Observable.combineLatest(state$, dataInterval$, (s, di) => {
     if (!isLoggedIn(s)) {
       return p([
-        a({href: createHref('/')}, "Please sign in in order to access this page.")
+        a({ href: createHref('/') }, "Please sign in in order to access this page.")
       ])
     }
     if (!isFullyLoaded(s)) {
       logger.log("PORTFOLIO VIEW - not yet fully loaded")
-      return h('paper-spinner-lite', { className: 'green', attributes: { active: '' }})
+      return h('paper-spinner-lite', { className: 'green', attributes: { active: '' } })
     }
 
     const equityHistoricalData = new EquityHistoricalData(s, di)
@@ -47,20 +44,20 @@ export default (state$, dataInterval$, router) => {
           div('.chart-placeholder .chart-big'),
           div(['1D', '1M', '3M', '6M', '1Y'].map((i) =>
             div({ className: di === i ? 'chart-interval center selected' : 'chart-interval center' }, i))),
-          div('.portfolio-items', { attributes: { role: 'listbox' }}, s.positions.map(position => {
-            const quoteData = new QuoteHistoricalData(position, di),
-                  quoteAbsChange = quoteData.absChange(),
-                  quoteClass = chartClass(quoteAbsChange)
+          div('.portfolio-items', { attributes: { role: 'listbox' } }, s.positions.map(position => {
+            const quoteData = new QuoteHistoricalData(position, di)
+            const quoteAbsChange = quoteData.absChange()
+            const quoteClass = chartClass(quoteAbsChange)
             return h('paper-item', [
-              h('paper-item-body', { attributes: { 'two-line': '' }}, [
-                a({href: createHref(`/positions/${position.instrument.symbol}`)}, [
+              h('paper-item-body', { attributes: { 'two-line': '' } }, [
+                a({ href: createHref(`/positions/${position.instrument.symbol}`) }, [
                   div([
                     `${position.instrument.symbol}`,
                     div(`.right .${quoteClass}}`, [
                       formatMoney(position.instrument.quote.last_trade_price)
                     ])
                   ]),
-                  div({ attributes: { secondary: '' }}, [
+                  div({ attributes: { secondary: '' } }, [
                     `${formatShares(position.quantity)} Shares`,
                     h(`small .right .${quoteClass}`,
                       `${formatMoney(quoteAbsChange)} (${toFixed(quoteData.percentChange(), 2)}%)`)

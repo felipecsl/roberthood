@@ -1,4 +1,4 @@
-import {Observable} from 'rx'
+import { Observable } from 'rx'
 import EquityHistoricalData from '../../../models/equity-historical-data'
 import QuoteHistoricalData from '../../../models/quote-historical-data'
 import logger from '../../../logger'

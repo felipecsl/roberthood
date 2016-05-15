@@ -1,5 +1,8 @@
 {
-  "extends": "eslint-config-cycle",
+  "extends": [
+    "eslint-config-cycle",
+    "eslint-config-airbnb"
+  ],
   "parser": "babel-eslint",
   "globals": {
     "location": true,
@@ -7,6 +10,10 @@
   },
   "rules": {
     "quotes": "off",
-    "comma-dangle": "warn"
+    "comma-dangle": "warn",
+    "max-len": [1, 100, 4],
+    "semi": "off",
+    "space-after-keywords": "off",
+    "space-return-throw-case": "off"
   }
 }
