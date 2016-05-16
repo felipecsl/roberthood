@@ -1,4 +1,4 @@
-import {Observable} from 'rx'
+import { Observable } from 'rx'
 import HistoricalData from './historical-data'
 
 export default class EquityHistoricalData extends HistoricalData {
@@ -17,14 +17,15 @@ export default class EquityHistoricalData extends HistoricalData {
     return Observable.merge(intraday$, daily$)
   }
 
-  data(previous_close) {
+  data(previousClose, type = 'line', width = 720, height = 300) {
     return ({
       data: this.dataPoints(),
-      prevClose: previous_close,
+      prevClose: previousClose,
       displayPrevClose: super.displayPrevClose(),
       selector: '.chart-placeholder',
-      width: 720,
-      height: 300
+      type,
+      width,
+      height,
     })
   }
 
@@ -38,10 +39,9 @@ export default class EquityHistoricalData extends HistoricalData {
     const lastCoreEquity = this.rawData.portfolio.last_core_equity
     if (super.isIntradayInterval()) {
       return lastCoreEquity - this.rawData.portfolio.adjusted_equity_previous_close
-    } else {
-      const data = super.filterDataByInterval(this.rawData.portfolio.dailyHistoricals)
-      return lastCoreEquity - data[0].adjusted_open_equity
     }
+    const data = super.filterDataByInterval(this.rawData.portfolio.dailyHistoricals)
+    return lastCoreEquity - data[0].adjusted_open_equity
   }
 
   dataPoints() {

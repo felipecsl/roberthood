@@ -25,8 +25,16 @@ body {
   min-width: 480px;
 }
 
+.left {
+  float: left;
+}
+
 .right {
   float: right;
+}
+
+.clearFix {
+  overflow: hidden;
 }
 
 .center {
@@ -68,7 +76,14 @@ h1.equity {
   stroke-width: 2px;
 }
 
+.graph-container {
+  background: #D8D8D8;
+  flex: 1 100%;
+  padding: 20px;
+}
+
 .chart-big .candle {
+  padding: 20px;
   stroke-width: 1px;
   stroke: black;
 }

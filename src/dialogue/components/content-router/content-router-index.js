@@ -4,6 +4,7 @@ import Positions from '../../pages/positions/positions-index'
 import Account from '../../pages/account/account-index'
 import Buy from '../../pages/buy/buy-index'
 import Orders from '../../pages/orders/orders-index'
+import Graphs from '../../pages/graphs/graph-index'
 import Page404 from '../../pages/page404/page404-index'
 import { Observable } from 'rx'
 import logger from '../../../logger'
@@ -14,6 +15,7 @@ const routes = {
   '/account': Account,
   '/orders': Orders,
   '/positions/:id': id => sources => Positions({ props$: Observable.of({ id }), ...sources }),
+  '/graphs/:id': id => sources => Graphs({ props$: Observable.of({ id }), ...sources }),
   '/positions/:id/buy': id => sources => Buy({ props$: Observable.of({ id }), ...sources }),
   '*': Page404,
 }
@@ -23,7 +25,7 @@ function ContentRouter(sources) {
   const { router, state$ } = sources
   const match$ = router.define(routes)
   const childrenSinks$ = match$.map(({ value }) => {
-    console.log('router#match')
+    logger.log('router#match')
     return value({
       ...sources,
       state$: state$.take(1),
