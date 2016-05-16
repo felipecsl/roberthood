@@ -1,4 +1,3 @@
-import {Observable} from 'rx'
 import QuoteHistoricalData from '../../../models/quote-historical-data'
 
 export default (model$, dataInterval$) =>

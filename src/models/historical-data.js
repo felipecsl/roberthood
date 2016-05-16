@@ -17,15 +17,16 @@ export default class HistoricalData {
     if (str === '1D' || str === '1M') {
       return moment().subtract(1, 'month').add(1, 'day')
     }
-    if (str == '3M') {
+    if (str === '3M') {
       return moment().subtract(3, 'month').add(1, 'day')
     }
-    if (str == '6M') {
+    if (str === '6M') {
       return moment().subtract(6, 'month').add(1, 'day')
     }
-    if (str == '1Y') {
+    if (str === '1Y') {
       return moment().subtract(1, 'year').add(1, 'day')
     }
+    return '1D'
   }
 
   /** Filters the provided data Array by skipping entries older than the provided interval date */

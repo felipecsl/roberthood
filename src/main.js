@@ -1,5 +1,4 @@
 import ContentRouter from './dialogue/components/content-router/content-router-index'
-import {div, h1} from '@cycle/dom'
 import logger from './logger'
 import moment from 'moment'
 
@@ -45,9 +44,9 @@ function main(sources) {
   return {
     DOM: Content.DOM,
     HTTP: Content.HTTP,
-    state$: state$,
     historicalData: Content.historicalData,
-    globalActions$: Content.globalActions$
+    globalActions$: Content.globalActions$,
+    state$,
   }
 }
 

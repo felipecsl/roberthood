@@ -17,7 +17,7 @@ export default (state$, dataInterval$, router) => {
   return Observable.combineLatest(state$, dataInterval$, (s, di) => {
     if (!isLoggedIn(s)) {
       return p([
-        a({ href: createHref('/') }, "Please sign in in order to access this page.")
+        a({ href: createHref('/') }, "Please sign in in order to access this page."),
       ])
     }
     if (!isFullyLoaded(s)) {
@@ -34,16 +34,18 @@ export default (state$, dataInterval$, router) => {
     return div(`.portfolio-layout`, [
       h(`.paper-card-fake`, [
         div('.heading', [
-          h1('Portfolio')
+          h1('Portfolio'),
         ]),
         h(`.card-content`, [
           h1(`.center.equity .${equityClass}`,
             `${formatMoney(s.portfolio.last_core_equity)}`),
           div('.center', [
-            h(`small.${equityClass}`, `${formatMoney(absChange)} (${toFixed(percentChange, 2)}%)`)]),
+            h(`small.${equityClass}`,
+              `${formatMoney(absChange)} (${toFixed(percentChange, 2)}%)`)]),
           div('.chart-placeholder .chart-big'),
           div(['1D', '1M', '3M', '6M', '1Y'].map((i) =>
-            div({ className: di === i ? 'chart-interval center selected' : 'chart-interval center' }, i))),
+            div({ className: (di === i
+              ? 'chart-interval center selected' : 'chart-interval center') }, i))),
           div('.portfolio-items', { attributes: { role: 'listbox' } }, s.positions.map(position => {
             const quoteData = new QuoteHistoricalData(position, di)
             const quoteAbsChange = quoteData.absChange()
@@ -54,21 +56,22 @@ export default (state$, dataInterval$, router) => {
                   div([
                     `${position.instrument.symbol}`,
                     div(`.right .${quoteClass}}`, [
-                      formatMoney(position.instrument.quote.last_trade_price)
-                    ])
+                      formatMoney(position.instrument.quote.last_trade_price),
+                    ]),
                   ]),
                   div({ attributes: { secondary: '' } }, [
                     `${formatShares(position.quantity)} Shares`,
                     h(`small .right .${quoteClass}`,
-                      `${formatMoney(quoteAbsChange)} (${toFixed(quoteData.percentChange(), 2)}%)`)
+                      `${formatMoney(quoteAbsChange)} (${toFixed(quoteData.percentChange(), 2)}%)`),
                   ]),
-                  div(`.quote-${position.instrument.symbol}-chart-placeholder .center .chart-small`)
-                ])
-              ])
+                  div(
+                    `.quote-${position.instrument.symbol}-chart-placeholder .center .chart-small`),
+                ]),
+              ]),
             ])
-          }))
-        ])
-      ])
+          })),
+        ]),
+      ]),
     ])
   }).do(s => logger.log("PORTFOLIO VIEW - event:", s))
 }
