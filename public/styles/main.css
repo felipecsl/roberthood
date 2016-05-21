@@ -59,8 +59,14 @@ h1.equity {
 .axis path,
 .axis line {
   fill: none;
-  stroke: #000;
+  stroke: #eee;
   shape-rendering: crispEdges;
+}
+
+.axis text {
+  fill: #fff;
+  font-size: 12px;
+  stroke-width: 0px;
 }
 
 .x.axis path {
@@ -77,13 +83,13 @@ h1.equity {
 }
 
 .graph-container {
-  background: #D8D8D8;
+  background: #ccc;
   flex: 1 100%;
   padding: 20px;
 }
 
 .fill-group {
-  fill: #D8D8D8;
+  fill: #ccc;
   stroke: transparent;
 }
 

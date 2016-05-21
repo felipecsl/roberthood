@@ -1,5 +1,5 @@
 const logger = ({
-  log: function (val) {
+  log() {
     const enabled = true
     if (enabled) {
       console.log(...arguments)
