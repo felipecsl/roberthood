@@ -82,8 +82,12 @@ h1.equity {
   padding: 20px;
 }
 
+.fill-group {
+  fill: #D8D8D8;
+  stroke: transparent;
+}
+
 .chart-big .candle {
-  padding: 20px;
   stroke-width: 1px;
   stroke: black;
 }

@@ -50,70 +50,132 @@ const parseLineData = (chartData) => {
 const parseData = (chartData, type = 'line') =>
   (type === 'line' ? parseLineData(chartData) : parseCandleData(chartData))
 
+/** Draws a solid gray rectangle in the svg so the candle chart can be dragged around */
+const drawFill = (svg) => {
+  const g = svg.selectAll('g.fill-group')
+    .data(['1'])
+  g.enter().append('g')
+      .attr('class', 'fill-group')
+  const fill = g.selectAll('.fill')
+    .data(['1'])
+  fill.enter().append('rect')
+      .attr('class', 'fill')
+      .attr('width', '100%')
+      .attr('height', '100%')
+}
+
+const drawCandleChart = (chartData) => {
+  const metadata = parseData(chartData, 'candle')
+  const prevClose = chartData.prevClose
+  const width = chartData.width
+  const height = chartData.height
+  const candleMargin = 4
+  const candleWidth = 4
+  const x = d3.scale.linear()
+      .domain([0, metadata.data.length])
+      .range([0, width])
+  const y = d3.scale.linear()
+      .domain([metadata.minValue, metadata.maxValue])
+      .range([height, 0])
+  const horizLine = d3.svg.line()
+      .x((d, i) => x(i * (metadata.data.length - 1)))
+      .y(d => y(d))
+  d3.selectAll(`${chartData.selector} > *`).remove()
+  const zoom = d3.behavior.zoom()
+    .scaleExtent([1, 1]) // Only allow translations
+    .on('zoom', () => {
+      const dx = Math.min(d3.event.translate[0], 0)
+      const totalItems = metadata.data.length
+      const maxDx = (totalItems * candleMargin) + (totalItems * candleWidth)
+      const xDiff = svgNode.node().getBoundingClientRect().width - maxDx
+      const finalDx = Math.max(dx, xDiff)
+      svg.attr('transform', `translate(${finalDx},0)`)
+    })
+  const svgNode = d3.select(chartData.selector)
+      .append("svg")
+      .attr('class', `chart candle`)
+      .attr("width", chartData.width)
+      .attr("height", height)
+  const svgContainer = svgNode
+      .append("g")
+      .attr('transform', 'translate(0,0)')
+      .call(zoom)
+  const svg = svgContainer.append('g')
+  drawFill(svg)
+  if (chartData.displayPrevClose) {
+    svg.append('path')
+        .attr("class", "reference")
+        .attr('d', horizLine([prevClose, prevClose]))
+  }
+  const candleHeight = (d) => Math.abs(
+    y(Math.min(d.open_price, d.close_price)) - y(Math.max(d.open_price, d.close_price)))
+  const candleClass = (d) => (d.open_price < d.close_price ? 'quote-up' : 'quote-down')
+  svg.selectAll("line.stem")
+    .data(metadata.data)
+    .enter()
+    .append("line")
+    .attr("class", "stem")
+    .attr("x1", (d, i) => (i * candleWidth) + (i * candleMargin) + candleWidth / 2)
+    .attr("x2", (d, i) => (i * candleWidth) + (i * candleMargin) + candleWidth / 2)
+    .attr("y1", (d) => y(d.high_price))
+    .attr("y2", (d) => y(d.low_price))
+    .attr("stroke", () => 'black')
+
+  svg.selectAll("rect")
+    .data(metadata.data)
+    .enter()
+    .append("rect")
+    .attr("class", (d) => `candle ${candleClass(d)}`)
+    .attr("x", (d, i) => (i * candleWidth) + (i * candleMargin))
+    .attr("y", (d) => y(Math.max(d.open_price, d.close_price)))
+    .attr("width", () => candleWidth)
+    .attr("height", (d) => candleHeight(d))
+}
+
+const drawLineChart = (chartData) => {
+  const metadata = parseData(chartData, 'line')
+  const prevClose = chartData.prevClose
+  const width = chartData.width
+  const height = chartData.height
+  const x = d3.scale.linear()
+      .domain([0, metadata.data.length])
+      .range([0, width])
+  const y = d3.scale.linear()
+      .domain([metadata.minValue, metadata.maxValue])
+      .range([height, 0])
+  const line = d3.svg.line()
+      .x((d, i) => x(i))
+      .y(d => y(d))
+  const horizLine = d3.svg.line()
+      .x((d, i) => x(i * (metadata.data.length - 1)))
+      .y(d => y(d))
+  d3.selectAll(`${chartData.selector} > *`).remove()
+  const svg = d3.select(chartData.selector)
+      .append("svg")
+      .attr('class', `chart line`)
+      .attr("width", chartData.width)
+      .attr("height", height)
+      .append("g")
+      .attr('transform', 'translate(0,0)')
+      .append('g')
+  if (chartData.displayPrevClose) {
+    svg.append('path')
+        .attr("class", "reference")
+        .attr('d', horizLine([prevClose, prevClose]))
+  }
+  svg.append('path')
+      .attr("class", `line ${metadata.klass}`)
+      .attr("d", line(metadata.data))
+}
+
 const makeHistoricalDataDriver = () => (sink$) => {
   logger.log("HistoricalDataDriver - Subscribing to sink: ", sink$)
   sink$.subscribe(chartData => {
     const type = chartData.type
-    const metadata = parseData(chartData, type)
-    const prevClose = chartData.prevClose
-    const margin = { top: 1, right: 1, bottom: 1, left: 1 }
-    const width = chartData.width - margin.left - margin.right
-    const height = chartData.height - margin.top - margin.bottom
-    const x = d3.scale.linear()
-        .domain([0, metadata.data.length])
-        .range([0, width])
-    const y = d3.scale.linear()
-        .domain([metadata.minValue, metadata.maxValue])
-        .range([height, 0])
-    const line = d3.svg.line()
-        .x((d, i) => x(i))
-        .y(d => y(d))
-    const horizLine = d3.svg.line()
-        .x((d, i) => x(i * (metadata.data.length - 1)))
-        .y(d => y(d))
-    d3.selectAll(`${chartData.selector} > *`).remove()
-    const svg = d3.select(chartData.selector)
-        .append("svg")
-        .attr('class', `chart ${type}`)
-        .attr("width", chartData.width)
-        .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-        .attr("transform", `translate(${margin.left},${margin.top})`)
-    if (chartData.displayPrevClose) {
-      svg.append('path')
-          .attr("class", "reference")
-          .attr('d', horizLine([prevClose, prevClose]))
-    }
     if (type === 'line') {
-      svg.append('path')
-          .attr("class", `line ${metadata.klass}`)
-          .attr("d", line(metadata.data))
+      drawLineChart(chartData)
     } else if (type === 'candle') {
-      const candleMargin = 4
-      const candleWidth = 4
-      const candleHeight = (d) => Math.abs(
-        y(Math.min(d.open_price, d.close_price)) - y(Math.max(d.open_price, d.close_price)))
-      const candleClass = (d) => (d.open_price < d.close_price ? 'quote-up' : 'quote-down')
-      svg.selectAll("line.stem")
-        .data(metadata.data)
-        .enter()
-        .append("line")
-        .attr("class", "stem")
-        .attr("x1", (d, i) => (i * candleWidth) + (i * candleMargin) + candleWidth / 2)
-        .attr("x2", (d, i) => (i * candleWidth) + (i * candleMargin) + candleWidth / 2)
-        .attr("y1", (d) => y(d.high_price))
-        .attr("y2", (d) => y(d.low_price))
-        .attr("stroke", () => 'black')
-
-      svg.selectAll("rect")
-        .data(metadata.data)
-        .enter()
-        .append("rect")
-        .attr("class", (d) => `candle ${candleClass(d)}`)
-        .attr("x", (d, i) => (i * candleWidth) + (i * candleMargin))
-        .attr("y", (d) => y(Math.max(d.open_price, d.close_price)))
-        .attr("width", () => candleWidth)
-        .attr("height", (d) => candleHeight(d))
+      drawCandleChart(chartData)
     }
   })
 }
