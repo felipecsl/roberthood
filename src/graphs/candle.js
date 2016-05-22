@@ -27,6 +27,27 @@ const parseCandleData = (chartData) => {
   }
 }
 
+/** returns a list of the indices of the data points representing the first day of each month */
+const getTickValues = (data, inputTimeFormat) => {
+  const dayTimeFormat = d3.time.format('%e')
+  const monthTimeFormat = d3.time.format('%m')
+  const yearTimeFormat = d3.time.format('%Y')
+  const indices = []
+  const formattedDates = data.map(d => inputTimeFormat.parse(d.begins_at))
+    .map((d) => ({
+      day: parseInt(dayTimeFormat(d).trim(), 10),
+      month: parseInt(monthTimeFormat(d), 10),
+      year: parseInt(yearTimeFormat(d), 10),
+    }))
+  formattedDates.forEach((d, i) => {
+    if (i === 0 || d.month > formattedDates[i - 1].month || d.year > formattedDates[i - 1].year) {
+      indices.push(i)
+    }
+  })
+
+  return indices
+}
+
 /** Draws a solid gray rectangle in the svg so the candle chart can be dragged around */
 const drawFill = (svg) => {
   const g = svg.selectAll('g.fill-group')
@@ -44,20 +65,27 @@ const drawFill = (svg) => {
 const drawCandleChart = (chartData) => {
   const metadata = parseCandleData(chartData)
   const height = chartData.height
-  const candleMargin = 2
-  const minCandleWidth = 6
+  const candleMargin = 1.5
+  const minCandleWidth = 8
   const totalItems = metadata.data.length
   const candleWidth = minCandleWidth
-  const stringifyDatetime = d3.time.format('%Y-%m-%dT%H:%M:%SZ')
-  const parseDatetime = stringifyDatetime.parse
-  const formatXAxis = d3.time.format('%b/%y')
+  const inputTimeFormat = d3.time.format('%Y-%m-%dT%H:%M:%SZ')
+  const xAxisOutputFormat = d3.time.format('%b/%y')
+  const formatXAxis = (i) => {
+    if (i >= 0 && i < totalItems) {
+      const item = metadata.data[i]
+      return xAxisOutputFormat(inputTimeFormat.parse(item.begins_at))
+    }
+    return ''
+  }
+  const tickValues = getTickValues(metadata.data, inputTimeFormat)
   const start = metadata.data[0].begins_at
   const end = metadata.data[totalItems - 1].begins_at
-  const getX = (d) => parseDatetime(d.begins_at)
-  logger.log(`start: ${parseDatetime(start)}, end: ${parseDatetime(end)}`)
-  const x = d3.time.scale()
-    .domain([parseDatetime(start), parseDatetime(end)])
-    .range([0, totalItems * ((candleWidth * 2) + candleMargin)])
+  logger.log(
+    `start date: ${inputTimeFormat.parse(start)}, end date: ${inputTimeFormat.parse(end)}`)
+  const x = d3.scale.linear()
+    .domain([0, totalItems])
+    .range([0, totalItems * (candleWidth + (candleMargin * 2))])
     .nice()
   const y = d3.scale.linear()
     .domain([metadata.minValue, metadata.maxValue])
@@ -67,6 +95,7 @@ const drawCandleChart = (chartData) => {
     .scale(x)
     .orient("bottom")
     .tickSize(-height)
+    .tickValues(tickValues)
     .tickFormat(formatXAxis)
   const onZoom = () => {
     svg.select(".x.axis").call(xAxis)
@@ -87,8 +116,8 @@ const drawCandleChart = (chartData) => {
       .enter()
       .append("line")
       .attr("class", "stem")
-      .attr("x1", (d) => x(getX(d)))
-      .attr("x2", (d) => x(getX(d)))
+      .attr("x1", (d, i) => x(i))
+      .attr("x2", (d, i) => x(i))
       .attr("y1", (d) => y(d.high_price))
       .attr("y2", (d) => y(d.low_price))
       .attr("stroke", () => 'black')
@@ -98,7 +127,7 @@ const drawCandleChart = (chartData) => {
       .enter()
       .append("rect")
       .attr("class", (d) => `candle ${candleClass(d)}`)
-      .attr("x", (d) => x(getX(d)))
+      .attr("x", (d, i) => x(i))
       .attr("y", (d) => y(Math.max(d.open_price, d.close_price)))
       .attr("width", () => candleWidth)
       .attr("height", (d) => candleHeight(d))
@@ -114,10 +143,10 @@ const drawCandleChart = (chartData) => {
   drawFill(svg)
   svg.append("g")
     .attr("class", "x axis")
-    .attr("transform", `translate(0, ${height - 25})`)
+    .attr("transform", `translate(0, ${height - 20})`)
     .call(xAxis)
   const candlesContainer = svg.append('g')
   drawCandles(candlesContainer)
 }
 
-export { parseCandleData, drawCandleChart }
+export { parseCandleData, drawCandleChart, getTickValues }
