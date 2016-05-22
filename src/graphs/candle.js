@@ -48,6 +48,49 @@ const getTickValues = (data, inputTimeFormat) => {
   return indices
 }
 
+const drawCandles = (svg, data, x, y, candleWidth) => {
+  const candleHeight = (d) => Math.abs(
+    y(Math.min(d.open_price, d.close_price)) - y(Math.max(d.open_price, d.close_price)))
+  const candleClass = (d) => (d.open_price < d.close_price ? 'quote-up' : 'quote-down')
+  const container = svg.append('g')
+    .attr("class", "candlesContainer")
+  container.selectAll('*').remove()
+  container.selectAll("line.stem")
+    .data(data)
+    .enter()
+    .append("line")
+    .attr("class", "stem")
+    .attr("x1", (d, i) => x(i))
+    .attr("x2", (d, i) => x(i))
+    .attr("y1", (d) => y(d.high_price))
+    .attr("y2", (d) => y(d.low_price))
+    .attr("stroke", () => 'black')
+    .attr("transform", () => `translate(${candleWidth / 2}, 0)`)
+  container.selectAll("rect")
+    .data(data)
+    .enter()
+    .append("rect")
+    .attr("class", (d) => `candle ${candleClass(d)}`)
+    .attr("x", (d, i) => x(i))
+    .attr("y", (d) => y(Math.max(d.open_price, d.close_price)))
+    .attr("width", () => candleWidth)
+    .attr("height", (d) => candleHeight(d))
+}
+
+const drawXAxis = (svg, xAxis, height) => {
+  svg.append("g")
+    .attr("class", "x axis")
+    .attr("transform", `translate(0, ${height - 20})`)
+    .call(xAxis)
+}
+
+const drawYAxis = (svg, yAxis, containerWidth) => {
+  svg.append("g")
+    .attr("class", "y axis")
+    .attr("transform", `translate(${containerWidth - 30}, 0)`)
+    .call(yAxis)
+}
+
 /** Draws a solid gray rectangle in the svg so the candle chart can be dragged around */
 const drawFill = (svg) => {
   const g = svg.selectAll('g.fill-group')
@@ -62,7 +105,14 @@ const drawFill = (svg) => {
       .attr('height', '100%')
 }
 
+const onZoom = (svg, xAxis) => {
+  svg.select(".x.axis").call(xAxis)
+  svg.select('.candlesContainer').attr('transform', `translate(${d3.event.translate[0]},0)`)
+}
+
 const drawCandleChart = (chartData) => {
+  const containerWidth = d3.select(chartData.selector).node().getBoundingClientRect().width
+  logger.log(`width: ${containerWidth}`)
   const metadata = parseCandleData(chartData)
   const height = chartData.height
   const candleMargin = 1.5
@@ -71,6 +121,7 @@ const drawCandleChart = (chartData) => {
   const candleWidth = minCandleWidth
   const inputTimeFormat = d3.time.format('%Y-%m-%dT%H:%M:%SZ')
   const xAxisOutputFormat = d3.time.format('%b/%y')
+  // Label to be displayed on X axis by converting the data item into a formatted date
   const formatXAxis = (i) => {
     if (i >= 0 && i < totalItems) {
       const item = metadata.data[i]
@@ -97,41 +148,14 @@ const drawCandleChart = (chartData) => {
     .tickSize(-height)
     .tickValues(tickValues)
     .tickFormat(formatXAxis)
-  const onZoom = () => {
-    svg.select(".x.axis").call(xAxis)
-    candlesContainer.attr('transform', `translate(${d3.event.translate[0]},0)`)
-  }
+  const yAxis = d3.svg.axis()
+    .scale(y)
+    .orient('right')
   const zoom = d3.behavior.zoom()
     .x(x)
     .y(y)
     .scaleExtent([1, 1])
-    .on('zoom', onZoom)
-  const candleHeight = (d) => Math.abs(
-    y(Math.min(d.open_price, d.close_price)) - y(Math.max(d.open_price, d.close_price)))
-  const candleClass = (d) => (d.open_price < d.close_price ? 'quote-up' : 'quote-down')
-  const drawCandles = (candlesContainer) => {
-    candlesContainer.selectAll('*').remove()
-    candlesContainer.selectAll("line.stem")
-      .data(metadata.data)
-      .enter()
-      .append("line")
-      .attr("class", "stem")
-      .attr("x1", (d, i) => x(i))
-      .attr("x2", (d, i) => x(i))
-      .attr("y1", (d) => y(d.high_price))
-      .attr("y2", (d) => y(d.low_price))
-      .attr("stroke", () => 'black')
-      .attr("transform", () => `translate(${candleWidth / 2}, 0)`)
-    candlesContainer.selectAll("rect")
-      .data(metadata.data)
-      .enter()
-      .append("rect")
-      .attr("class", (d) => `candle ${candleClass(d)}`)
-      .attr("x", (d, i) => x(i))
-      .attr("y", (d) => y(Math.max(d.open_price, d.close_price)))
-      .attr("width", () => candleWidth)
-      .attr("height", (d) => candleHeight(d))
-  }
+    .on('zoom', () => onZoom(svg, xAxis))
   d3.selectAll(`${chartData.selector} > *`).remove()
   const svgNode = d3.select(chartData.selector)
       .append("svg")
@@ -141,12 +165,9 @@ const drawCandleChart = (chartData) => {
       .call(zoom)
   const svg = svgNode.append('g')
   drawFill(svg)
-  svg.append("g")
-    .attr("class", "x axis")
-    .attr("transform", `translate(0, ${height - 20})`)
-    .call(xAxis)
-  const candlesContainer = svg.append('g')
-  drawCandles(candlesContainer)
+  drawXAxis(svg, xAxis, height)
+  drawYAxis(svg, yAxis, containerWidth)
+  drawCandles(svg, metadata.data, x, y, candleWidth)
 }
 
 export { parseCandleData, drawCandleChart, getTickValues }
