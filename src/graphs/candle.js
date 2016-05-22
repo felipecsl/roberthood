@@ -84,6 +84,13 @@ const drawXAxis = (svg, xAxis, height) => {
     .call(xAxis)
 }
 
+const drawYAxis = (svg, yAxis, containerWidth) => {
+  svg.append("g")
+    .attr("class", "y axis")
+    .attr("transform", `translate(${containerWidth - 30}, 0)`)
+    .call(yAxis)
+}
+
 /** Draws a solid gray rectangle in the svg so the candle chart can be dragged around */
 const drawFill = (svg) => {
   const g = svg.selectAll('g.fill-group')
@@ -104,6 +111,8 @@ const onZoom = (svg, xAxis) => {
 }
 
 const drawCandleChart = (chartData) => {
+  const containerWidth = d3.select(chartData.selector).node().getBoundingClientRect().width
+  logger.log(`width: ${containerWidth}`)
   const metadata = parseCandleData(chartData)
   const height = chartData.height
   const candleMargin = 1.5
@@ -112,6 +121,7 @@ const drawCandleChart = (chartData) => {
   const candleWidth = minCandleWidth
   const inputTimeFormat = d3.time.format('%Y-%m-%dT%H:%M:%SZ')
   const xAxisOutputFormat = d3.time.format('%b/%y')
+  // Label to be displayed on X axis by converting the data item into a formatted date
   const formatXAxis = (i) => {
     if (i >= 0 && i < totalItems) {
       const item = metadata.data[i]
@@ -138,6 +148,9 @@ const drawCandleChart = (chartData) => {
     .tickSize(-height)
     .tickValues(tickValues)
     .tickFormat(formatXAxis)
+  const yAxis = d3.svg.axis()
+    .scale(y)
+    .orient('right')
   const zoom = d3.behavior.zoom()
     .x(x)
     .y(y)
@@ -153,6 +166,7 @@ const drawCandleChart = (chartData) => {
   const svg = svgNode.append('g')
   drawFill(svg)
   drawXAxis(svg, xAxis, height)
+  drawYAxis(svg, yAxis, containerWidth)
   drawCandles(svg, metadata.data, x, y, candleWidth)
 }
 
