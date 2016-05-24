@@ -53,6 +53,8 @@ const drawCandles = (svg, data, x, y, candleWidth) => {
     y(Math.min(d.open_price, d.close_price)) - y(Math.max(d.open_price, d.close_price)))
   const candleClass = (d) => (d.open_price < d.close_price ? 'quote-up' : 'quote-down')
   const container = svg.append('g')
+    .attr('clip-path', 'url(#clip)')
+    .append('g')
     .attr("class", "candlesContainer")
   container.selectAll('*').remove()
   container.selectAll("line.stem")
@@ -79,6 +81,8 @@ const drawCandles = (svg, data, x, y, candleWidth) => {
 
 const drawXAxis = (svg, xAxis, height) => {
   svg.append("g")
+    .attr('clip-path', 'url(#clip)')
+    .append("g")
     .attr("class", "x axis")
     .attr("transform", `translate(0, ${height - 20})`)
     .call(xAxis)
@@ -87,7 +91,7 @@ const drawXAxis = (svg, xAxis, height) => {
 const drawYAxis = (svg, yAxis, containerWidth) => {
   svg.append("g")
     .attr("class", "y axis")
-    .attr("transform", `translate(${containerWidth - 30}, 0)`)
+    .attr("transform", `translate(${containerWidth - 30}, -30)`)
     .call(yAxis)
 }
 
@@ -120,7 +124,7 @@ const drawCandleChart = (chartData) => {
   const totalItems = metadata.data.length
   const candleWidth = minCandleWidth
   const inputTimeFormat = d3.time.format('%Y-%m-%dT%H:%M:%SZ')
-  const xAxisOutputFormat = d3.time.format('%b/%y')
+  const xAxisOutputFormat = d3.time.format('%b %Y')
   // Label to be displayed on X axis by converting the data item into a formatted date
   const formatXAxis = (i) => {
     if (i >= 0 && i < totalItems) {
@@ -145,12 +149,12 @@ const drawCandleChart = (chartData) => {
   const xAxis = d3.svg.axis()
     .scale(x)
     .orient("bottom")
-    .tickSize(-height)
     .tickValues(tickValues)
     .tickFormat(formatXAxis)
   const yAxis = d3.svg.axis()
     .scale(y)
     .orient('right')
+    .ticks(30)
   const zoom = d3.behavior.zoom()
     .x(x)
     .y(y)
@@ -164,6 +168,13 @@ const drawCandleChart = (chartData) => {
       .attr("height", height)
       .call(zoom)
   const svg = svgNode.append('g')
+  svg.append('clipPath')
+      .attr('id', 'clip')
+      .append('rect')
+      .attr('x', 0)
+      .attr('y', 0)
+      .attr('width', containerWidth - 30)
+      .attr('height', height)
   drawFill(svg)
   drawXAxis(svg, xAxis, height)
   drawYAxis(svg, yAxis, containerWidth)

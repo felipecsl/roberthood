@@ -69,10 +69,6 @@ h1.equity {
   stroke-width: 0px;
 }
 
-.x.axis path {
-  display: none;
-}
-
 .chart-big svg.candle {
   shape-rendering: crispEdges;
 }
