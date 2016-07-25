@@ -1,4 +1,4 @@
-import {instrumentIdFromUrl} from '../../../helpers'
+import { instrumentIdFromUrl } from '../../../helpers'
 import logger from '../../../logger'
 
 function filterByCategory(request$, category) {
@@ -9,9 +9,10 @@ function filterByCategory(request$, category) {
 const user$ = (request$, state$) => filterByCategory(request$, 'user')
   .map(res => res.body)
   .withLatestFrom(state$, (res, state) => {
-    state.user = res
+    const newState = state
+    newState.user = res
     logger.log("PORTFOLIO RESPONSES - user:", state)
-    return state
+    return newState
   })
   .share()
 
@@ -19,52 +20,49 @@ const accounts$ = (request$, state$) => filterByCategory(request$, 'account')
   .map(res => res.body.results[0])
   .withLatestFrom(state$, (res, state) => {
     logger.log("PORTFOLIO RESPONSES - account:", state)
-    state.account = res
-    return state
+    const newState = state
+    newState.account = res
+    return newState
   })
   .share()
 
 const portfolio$ = (request$, state$) => filterByCategory(request$, 'portfolio')
   .map(res => res.body)
   .withLatestFrom(state$, (res, state) => {
-    state.portfolio = res
-    return state
+    const newState = state
+    newState.portfolio = res
+    return newState
   })
   .share()
 
-const portfolioIntradayHistoricals$ = (request$, state$) => filterByCategory(request$, 'historicals')
-  .filter(res => res.request.span === 'day')
-  .map(res => res.body.equity_historicals)
+const portfolioHistoricals$ = (request$, state$) => filterByCategory(request$, 'historicals')
   .flatMap(res => state$.take(1).map((state) => {
-    state.portfolio.intradayHistoricals = res
-    return state
-  }))
-  .share()
-
-const portfolioDailyHistoricals$ = (request$, state$) => filterByCategory(request$, 'historicals')
-  .filter(res => res.request.span === 'year')
-  .map(res => res.body.equity_historicals)
-  .flatMap(res => state$.take(1).map((state) => {
-    state.portfolio.dailyHistoricals = res
-    return state
+    const newState = state
+    if (!newState.portfolio.historicals) {
+      newState.portfolio.historicals = {}
+    }
+    newState.portfolio.historicals[res.request.span] = res.body.equity_historicals
+    return newState
   }))
   .share()
 
 const positions$ = (request$, state$) => filterByCategory(request$, 'positions')
   .map(res => res.body.results)
   .map(results => results.map(pos => {
-    pos.instrumentId = instrumentIdFromUrl(pos.instrument)
-    return pos
+    const newPos = pos
+    newPos.instrumentId = instrumentIdFromUrl(pos.instrument)
+    return newPos
   }))
   .flatMap(res => state$.take(1).map((state) => {
-    state.positions = res
+    const newState = state
+    newState.positions = res
     return state
   }))
   .share()
 
 const instruments$ = (request$, state$) => filterByCategory(request$, 'instruments')
   .flatMap(res => state$.take(1).map((state) => {
-    let position = state.positions.find(p => p.instrumentId === res.request.instrumentId)
+    const position = state.positions.find(p => p.instrumentId === res.request.instrumentId)
     position.instrument = res.body
     return state
   }))
@@ -74,29 +72,20 @@ const quotes$ = (request$, state$) => filterByCategory(request$, 'quotes')
   .map(res => res.body.results)
   .flatMap(res => state$.take(1).map((state) => {
     res.forEach(quote => {
-      let position = state.positions.find(p => p.instrument.symbol === quote.symbol)
+      const position = state.positions.find(p => p.instrument.symbol === quote.symbol)
       position.instrument.quote = quote
     })
     return state
   }))
   .share()
 
-const quoteIntradayHistoricals$ = (request$, state$) => filterByCategory(request$, 'quoteHistorical')
-  .filter(res => res.request.span === 'day')
-  .map(res => res.body)
+const quoteHistoricals$ = (request$, state$) => filterByCategory(request$, 'quoteHistorical')
   .flatMap(res => state$.take(1).map((state) => {
-    let position = state.positions.find(p => p.instrument.symbol === res.symbol)
-    position.intradayHistoricals = res.historicals
-    return state
-  }))
-  .share()
-
-const quoteDailyHistoricals$ = (request$, state$) => filterByCategory(request$, 'quoteHistorical')
-  .filter(res => res.request.span === 'year')
-  .map(res => res.body)
-  .flatMap(res => state$.take(1).map((state) => {
-    let position = state.positions.find(p => p.instrument.symbol === res.symbol)
-    position.dailyHistoricals = res.historicals
+    const position = state.positions.find(p => p.instrument.symbol === res.body.symbol)
+    if (!position.historicals) {
+      position.historicals = {}
+    }
+    position.historicals[res.request.span] = res.body.historicals
     return state
   }))
   .share()
@@ -105,11 +94,9 @@ export default {
   user$,
   accounts$,
   portfolio$,
-  portfolioIntradayHistoricals$,
-  portfolioDailyHistoricals$,
+  portfolioHistoricals$,
   positions$,
   instruments$,
   quotes$,
-  quoteIntradayHistoricals$,
-  quoteDailyHistoricals$
+  quoteHistoricals$,
 }

@@ -9,7 +9,7 @@ describe('Data Driver', () => {
       { "close_price":"3278.9300", "adjusted_close_equity":"3278.9300", "begins_at":"2016-04-05T00:00:00Z", "open_market_value":"2961.3700", "open_price":"3254.6900", "adjusted_open_equity":"3254.6900", "close_market_value":"2985.6100", "net_return":"0.0074", "open_equity":"3254.6900", "close_equity":"3278.9300" },
       { "close_price":"3331.6900", "adjusted_close_equity":"3331.6900", "begins_at":"2016-04-06T00:00:00Z", "open_market_value":"2980.8500", "open_price":"3274.1700", "adjusted_open_equity":"3274.1700", "close_market_value":"3038.3700", "net_return":"0.0176", "open_equity":"3274.1700", "close_equity":"3331.6900" },
       { "close_price":"3286.1400", "adjusted_close_equity":"3286.1400", "begins_at":"2016-04-07T00:00:00Z", "open_market_value":"3033.4400", "open_price":"3326.7600", "adjusted_open_equity":"3326.7600", "close_market_value":"2992.8200", "net_return":"-0.0122", "open_equity":"3326.7600", "close_equity":"3286.1400" },
-      { "close_price":"3267.4900", "adjusted_close_equity":"3267.4900", "begins_at":"2016-04-08T00:00:00Z", "open_market_value":"3017.0900", "open_price":"3310.4100", "adjusted_open_equity":"3310.4100", "close_market_value":"2974.1700", "net_return":"-0.0130", "open_equity":"3310.4100", "close_equity":"3267.4900" }
+      { "close_price":"3267.4900", "adjusted_close_equity":"3267.4900", "begins_at":"2016-04-08T00:00:00Z", "open_market_value":"3017.0900", "open_price":"3310.4100", "adjusted_open_equity":"3310.4100", "close_market_value":"2974.1700", "net_return":"-0.0130", "open_equity":"3310.4100", "close_equity":"3267.4900" },
     ]
     const testData = {
       data,
@@ -30,40 +30,40 @@ describe('Data Driver', () => {
 
   it('candle data format', () => {
     const data = [{
-      begins_at: "2015-04-24T00:00:00Z",
-      open_price: "128.1151",
-      close_price: "127.9089",
-      high_price: "128.2525",
-      low_price: "126.8780",
-      volume: 44525905,
-      interpolated: false,
-    },
-    {
-      begins_at: "2015-04-27T00:00:00Z",
-      open_price: "129.9020",
-      close_price: "130.2358",
-      high_price: "130.7070",
-      low_price: "128.7631",
-      volume: 96954207,
-      interpolated: false,
-    },
-    {
-      begins_at: "2015-04-28T00:00:00Z",
-      open_price: "132.0079",
-      close_price: "128.1838",
-      high_price: "132.0914",
-      low_price: "127.2118",
-      volume: 118923970,
-      interpolated: false,
-    }],
-    testData = {
-      data,
-      prevClose: 1234.56,
-      displayPrevClose: true,
-      selector: '.chart-placeholder',
-      width: 480,
-      height: 250,
-    }
+        begins_at: "2015-04-24T00:00:00Z",
+        open_price: "128.1151",
+        close_price: "127.9089",
+        high_price: "128.2525",
+        low_price: "126.8780",
+        volume: 44525905,
+        interpolated: false,
+      },
+      {
+        begins_at: "2015-04-27T00:00:00Z",
+        open_price: "129.9020",
+        close_price: "130.2358",
+        high_price: "130.7070",
+        low_price: "128.7631",
+        volume: 96954207,
+        interpolated: false,
+      },
+      {
+        begins_at: "2015-04-28T00:00:00Z",
+        open_price: "132.0079",
+        close_price: "128.1838",
+        high_price: "132.0914",
+        low_price: "127.2118",
+        volume: 118923970,
+        interpolated: false,
+      }],
+      testData = {
+        data,
+        prevClose: 1234.56,
+        displayPrevClose: true,
+        selector: '.chart-placeholder',
+        width: 480,
+        height: 250,
+      }
     expect(parseCandleData(testData)).toEqual(({
       data: [{
         begins_at: "2015-04-24T00:00:00Z",

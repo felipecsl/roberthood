@@ -43,7 +43,7 @@ export default (state$, dataInterval$, router) => {
             h(`small.${equityClass}`,
               `${formatMoney(absChange)} (${toFixed(percentChange, 2)}%)`)]),
           div('.chart-placeholder .chart-big'),
-          div(['1D', '1M', '3M', '6M', '1Y'].map((i) =>
+          div(['1D', '1M', '3M', '6M', '1Y', 'ALL'].map((i) =>
             div({ className: (di === i
               ? 'chart-interval center selected' : 'chart-interval center') }, i))),
           div('.portfolio-items', { attributes: { role: 'listbox' } }, s.positions.map(position => {
