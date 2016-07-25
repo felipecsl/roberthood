@@ -10,19 +10,26 @@ export default class QuoteHistoricalData extends HistoricalData {
 
     const intraday$ = Observable.combineLatest(
       dataInterval$.filter(i => i === '1D'),
-      filterPositions(model$, p => p.intradayHistoricals !== undefined),
-      (i, p) => p.map(pos => new QuoteHistoricalData(pos.intradayHistoricals, i)
+      filterPositions(model$, p => p.historicals && p.historicals.day !== undefined),
+      (i, p) => p.map(pos => new QuoteHistoricalData(pos.historicals.day, i)
         .data(pos.instrument))
     ).flatMap(x => x)
 
     const daily$ = Observable.combineLatest(
       dataInterval$.filter(i => i !== '1D'),
-      filterPositions(model$, p => p.dailyHistoricals !== undefined),
-      (i, p) => p.map(pos => new QuoteHistoricalData(pos.dailyHistoricals, i)
+      filterPositions(model$, p => p.historicals && p.historicals.year !== undefined),
+      (i, p) => p.map(pos => new QuoteHistoricalData(pos.historicals.year, i)
         .data(pos.instrument))
     ).flatMap(x => x)
 
-    return Observable.merge(intraday$, daily$)
+    const all$ = Observable.combineLatest(
+      dataInterval$.filter(i => i === 'ALL'),
+      filterPositions(model$, p => p.historicals && p.historicals['5year'] !== undefined),
+      (i, p) => p.map(pos => new QuoteHistoricalData(pos.historicals['5year'], i)
+        .data(pos.instrument))
+    ).flatMap(x => x)
+
+    return Observable.merge(intraday$, daily$, all$)
   }
 
   /** Returns an Observable with a data stream for the currently selected instrument  */
@@ -33,16 +40,22 @@ export default class QuoteHistoricalData extends HistoricalData {
     const intraday$ = Observable.combineLatest(
       dataInterval$.filter(i => i === '1D'),
       filteredModel$,
-      (i, p) => new QuoteHistoricalData(p.intradayHistoricals, i)
+      (i, p) => new QuoteHistoricalData(p.historicals.day, i)
         .data(p.instrument, type, width, height))
 
     const daily$ = Observable.combineLatest(
       dataInterval$.filter(i => i !== '1D'),
       filteredModel$,
-      (i, p) => new QuoteHistoricalData(p.dailyHistoricals, i)
+      (i, p) => new QuoteHistoricalData(p.historicals.year, i)
         .data(p.instrument, type, width, height))
 
-    return Observable.merge(intraday$, daily$)
+    const all$ = Observable.combineLatest(
+      dataInterval$.filter(i => i === 'ALL'),
+      filteredModel$,
+      (i, p) => new QuoteHistoricalData(p.historicals['5year'], i)
+        .data(p.instrument, type, width, height))
+
+    return Observable.merge(intraday$, daily$, all$)
   }
 
   percentChange() {
@@ -55,7 +68,7 @@ export default class QuoteHistoricalData extends HistoricalData {
     if (super.isIntradayInterval()) {
       return lastTradePrice - this.rawData.instrument.quote.previous_close
     }
-    const data = super.filterDataByInterval(this.rawData.dailyHistoricals)
+    const data = super.filterDataByInterval(this.rawData.historicals.year)
     return lastTradePrice - data[0].open_price
   }
 

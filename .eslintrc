@@ -28,6 +28,7 @@
     "comma-dangle": "warn",
     "max-len": [1, 100, 4],
     "semi": "off",
+    "no-underscore-dangle": "off",
     "space-after-keywords": "off",
     "space-return-throw-case": "off",
     "no-class/no-class": "off"

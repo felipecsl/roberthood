@@ -13,13 +13,11 @@ export default (globalActions$, request$, state$) => {
   const user$ = responses.user$(request$, modelProxy$)
   const accounts$ = responses.accounts$(request$, modelProxy$)
   const portfolio$ = responses.portfolio$(request$, modelProxy$)
-  const portfolioIntradayHistoricals$ = responses.portfolioIntradayHistoricals$(request$, modelProxy$)
-  const portfolioDailyHistoricals$ = responses.portfolioDailyHistoricals$(request$, modelProxy$)
+  const portfolioHistoricals$ = responses.portfolioHistoricals$(request$, modelProxy$)
   const positions$ = responses.positions$(request$, modelProxy$)
   const instruments$ = responses.instruments$(request$, modelProxy$)
   const quotes$ = responses.quotes$(request$, modelProxy$)
-  const quoteIntradayHistoricals$ = responses.quoteIntradayHistoricals$(request$, modelProxy$)
-  const quoteDailyHistoricals$ = responses.quoteDailyHistoricals$(request$, modelProxy$)
+  const quoteHistoricals$ = responses.quoteHistoricals$(request$, modelProxy$)
   const resetState$ = globalActions$.withLatestFrom(state$, (g, s) => {
     logger.log('PORTFOLIO MODEL - resetting state')
     return { token: s.token }
@@ -29,13 +27,11 @@ export default (globalActions$, request$, state$) => {
     user$,
     accounts$,
     portfolio$,
-    portfolioIntradayHistoricals$,
     positions$,
-    portfolioDailyHistoricals$,
+    portfolioHistoricals$,
     instruments$,
     quotes$,
-    quoteIntradayHistoricals$,
-    quoteDailyHistoricals$,
+    quoteHistoricals$,
     resetState$).share()
 
   model$.subscribe(modelProxy$)

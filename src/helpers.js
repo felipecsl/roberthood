@@ -1,5 +1,3 @@
-import {toFixed} from 'accounting'
-
 const CLASS_QUOTE_UP = ".quote-up"
 const CLASS_QUOTE_DOWN = ".quote-down"
 /**
@@ -11,7 +9,7 @@ export const formatShares = (amount) => amount.substring(0, amount.indexOf("."))
  * Returns the CSS class name to be used for displaying the provided portfolio based on
  * whether it is going up or down.
  */
-export const chartClass = (absChange) => absChange >= 0 ? CLASS_QUOTE_UP : CLASS_QUOTE_DOWN
+export const chartClass = (absChange) => (absChange >= 0 ? CLASS_QUOTE_UP : CLASS_QUOTE_DOWN)
 
 export const instrumentIdFromUrl = (url) =>
   url.replace("https://api.robinhood.com/instruments/", "").replace("/", "")
@@ -28,3 +26,18 @@ export const isFullyLoaded = (m) => m.positions !== undefined && m.positions.map
       && i.quote.last_trade_price !== undefined)
 
 export const defined = (s) => s !== undefined
+
+// Historical data span (either intraday or daily)
+export const interval = (i) => {
+  if (i === 'ALL') {
+    return 'week'
+  }
+  return i === '1D' ? '5minute' : 'day'
+}
+
+export const span = (i) => {
+  if (i === 'ALL') {
+    return '5year'
+  }
+  return i === '1D' ? 'day' : 'year'
+}

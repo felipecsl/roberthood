@@ -1,4 +1,4 @@
-import {Observable} from 'rx'
+import { Observable } from 'rx'
 import view from './portfolio-view'
 import model from './portfolio-model'
 import requests from './portfolio-requests'

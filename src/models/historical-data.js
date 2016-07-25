@@ -26,6 +26,9 @@ export default class HistoricalData {
     if (str === '1Y') {
       return moment().subtract(1, 'year').add(1, 'day')
     }
+    if (str === 'ALL') {
+      return moment().subtract(5, 'year').add(1, 'day')
+    }
     return '1D'
   }
 

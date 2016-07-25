@@ -1,4 +1,4 @@
-import {Observable} from 'rx'
+import { Observable } from 'rx'
 import moment from 'moment'
 import PositionData from '../src/dialogue/pages/positions/positions-data'
 
@@ -15,20 +15,24 @@ describe('Position Data', () => {
         e.begins_at = moment().subtract(data.length - 1 - i, 'day').format(dateFormat))
       const model$ = Observable.just(({
         positions: [{
-            dailyHistoricals: data,
-            instrument: {
-              symbol: 'AAPL',
-              quote: { previous_close: "1234.5678" },
-            }
+          historicals: {
+            year: data,
           },
+          instrument: {
+            symbol: 'AAPL',
+            quote: { previous_close: "1234.5678" },
+          },
+        },
           {
-            dailyHistoricals: [data[0]],
+            historicals: {
+              year: [data[0]],
+            },
             instrument: {
               symbol: 'GOOG',
               quote: { previous_close: "9876.5432" },
-            }
+            },
           }],
-        currentInstrument: 'AAPL'
+        currentInstrument: 'AAPL',
       }))
 
       const dataInterval$ = Observable.just('1Y')
@@ -47,20 +51,24 @@ describe('Position Data', () => {
         e.begins_at = moment().subtract(data.length - 1 - i, 'hour').format(dateFormat))
       const model$ = Observable.just(({
         positions: [{
-            intradayHistoricals: data,
-            instrument: {
-              symbol: 'AAPL',
-              quote: { previous_close: "1234.5678" },
-            }
+          historicals: {
+            day: [data[0]],
           },
+          instrument: {
+            symbol: 'AAPL',
+            quote: { previous_close: "1234.5678" },
+          },
+        },
           {
-            intradayHistoricals: [data[0]],
+            historicals: {
+              day: [data[0]],
+            },
             instrument: {
               symbol: 'GOOG',
               quote: { previous_close: "9876.5432" },
-            }
+            },
           }],
-        currentInstrument: 'GOOG'
+        currentInstrument: 'GOOG',
       }))
 
       const dataInterval$ = Observable.just('1D')

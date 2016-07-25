@@ -1,6 +1,5 @@
 import { Observable } from 'rx'
-import { isFullyLoaded } from '../../../helpers'
-import logger from '../../../logger'
+import { isFullyLoaded, interval, span } from '../../../helpers'
 
 const _account$ = ({ token }) => [({
   method: 'GET',
@@ -14,21 +13,21 @@ const _account$ = ({ token }) => [({
   category: 'account',
 })]
 
-const _portfolio$ = ({account, token}) => Observable.just({
+const _portfolio$ = ({ account, token }) => Observable.just({
   method: 'GET',
   eager: true,
   url: `/accounts/${account.account_number}/portfolio?token=${token}`,
   category: 'portfolio',
 })
 
-const _positions$ = ({account, token}) => Observable.just({
+const _positions$ = ({ account, token }) => Observable.just({
   method: 'GET',
   eager: true,
   url: `/positions/${account.account_number}?token=${token}`,
   category: 'positions',
 })
 
-const _instruments$$ = ({positions, token}) => positions.map(position => ({
+const _instruments$$ = ({ positions, token }) => positions.map(position => ({
   method: 'GET',
   eager: true,
   url: `/instruments/${position.instrumentId}?token=${token}`,
@@ -36,16 +35,12 @@ const _instruments$$ = ({positions, token}) => positions.map(position => ({
   category: 'instruments',
 }))
 
-const _quotes$ = ({positions, token}) => Observable.just({
+const _quotes$ = ({ positions, token }) => Observable.just({
   method: 'GET',
   eager: true,
   url: `/quotes?symbols=${positions.map(p => p.instrument.symbol).join(',')}&token=${token}`,
   category: 'quotes',
 })
-
-// Historical data span (either intraday or daily)
-const interval = (i) => i === '1D' ? '5minute' : 'day'
-const span = (i) => i === '1D' ? 'day' : 'year'
 
 const _quotesHistoricals$ = (positions, token, intervalStr) => positions.map(p => ({
   method: 'GET',
@@ -84,16 +79,16 @@ const requests = (model$) => {
     .filter(m => m.positions.every(p => p.instrument.symbol !== undefined))
     .take(1)
     .flatMap(_quotes$)
-  const quotesHistoricals$ = Observable.from(['1D', '1M'])
+  const quotesHistoricals$ = Observable.from(['1D', '1M', 'ALL'])
     .map(i => model$.filter(m => m.positions !== undefined)
       .filter(m => m.positions.every(p => p.instrument.symbol !== undefined
-        && !p.intradayHistoricals))
+        && !p.historicals))
       .take(1)
       .flatMap(h => _quotesHistoricals$(h.positions, h.token, i))
     ).flatMap(x => x)
-  const historicals$ = Observable.from(['1D', '1M'])
+  const historicals$ = Observable.from(['1D', '1M', 'ALL'])
     .map(i => model$.filter(m => isFullyLoaded(m)
-        && !m.portfolio.intradayHistoricals && !m.portfolio.dailyHistoricals)
+        && !m.portfolio.historicals)
       .take(1)
       .flatMap(h => _historicals$(h.account, h.token, i))
     ).flatMap(x => x)

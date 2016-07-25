@@ -1,4 +1,4 @@
-import {Observable} from 'rx'
+import { Observable } from 'rx'
 import moment from 'moment'
 import PortfolioData from '../src/dialogue/pages/portfolio/portfolio-data'
 
@@ -17,7 +17,13 @@ describe('Portfolio Data', () => {
       it('data format', (done) => {
         data.forEach((e, i) =>
           e.begins_at = moment().subtract(data.length - 1 - i, 'day').format(dateFormat))
-        const model$ = Observable.just(({ portfolio: { dailyHistoricals: data } }))
+        const model$ = Observable.just(({
+          portfolio: {
+            historicals: {
+              year: data,
+            },
+          },
+        }))
         const dataInterval$ = Observable.just('1Y')
         const data$ = PortfolioData(model$, dataInterval$)
         data$.subscribe(d => {
@@ -33,7 +39,13 @@ describe('Portfolio Data', () => {
       it('no filtering', (done) => {
         data.forEach((e, i) =>
           e.begins_at = moment().subtract(data.length - 1 - i, 'day').format(dateFormat))
-        const model$ = Observable.just(({ portfolio: { dailyHistoricals: data } }))
+        const model$ = Observable.just(({
+          portfolio: {
+            historicals: {
+              year: data,
+            },
+          },
+        }))
         const dataInterval$ = Observable.just('1Y')
         const data$ = PortfolioData(model$, dataInterval$)
         data$.subscribe(d => {
@@ -45,7 +57,13 @@ describe('Portfolio Data', () => {
       it('filtering', (done) => {
         data.forEach((e, i) =>
           e.begins_at = moment().subtract(data.length - 1 - i, 'month').format(dateFormat))
-        const model$ = Observable.just(({ portfolio: { dailyHistoricals: data } }))
+        const model$ = Observable.just(({
+          portfolio: {
+            historicals: {
+              year: data,
+            },
+          },
+        }))
         const dataInterval$ = Observable.just('1M')
         const data$ = PortfolioData(model$, dataInterval$)
         data$.subscribe(d => {
@@ -59,7 +77,13 @@ describe('Portfolio Data', () => {
       it('filtering', (done) => {
         data.forEach((e, i) =>
           e.begins_at = moment().subtract(data.length - 1 - i, 'hour').format(dateFormat))
-        const model$ = Observable.just(({ portfolio: { intradayHistoricals: data } }))
+        const model$ = Observable.just(({
+          portfolio: {
+            historicals: {
+              day: data,
+            },
+          },
+        }))
         const dataInterval$ = Observable.just('1D')
         const data$ = PortfolioData(model$, dataInterval$)
         data$.subscribe(d => {
@@ -74,8 +98,10 @@ describe('Portfolio Data', () => {
         const model$ = Observable.just(({
           portfolio: {
             adjusted_equity_previous_close: "3286.1400",
-            intradayHistoricals: data
-          }
+            historicals: {
+              day: data,
+            },
+          },
         }))
         const dataInterval$ = Observable.just('1D')
         const data$ = PortfolioData(model$, dataInterval$)
@@ -97,11 +123,13 @@ describe('Portfolio Data', () => {
         data.forEach((e, i) =>
           e.begins_at = moment().subtract(data.length - 1 - i, 'day').format(dateFormat))
         const model$ = Observable.just(({ positions: [{
-          dailyHistoricals: data,
+          historicals: {
+            year: data,
+          },
           instrument: {
             symbol: 'AAPL',
             quote: { previous_close: "1234.5678" },
-          }
+          },
         }], portfolio: {} }))
         const dataInterval$ = Observable.just('1Y')
         const data$ = PortfolioData(model$, dataInterval$)
@@ -119,11 +147,13 @@ describe('Portfolio Data', () => {
         data.forEach((e, i) =>
           e.begins_at = moment().subtract(data.length - 1 - i, 'day').format(dateFormat))
         const model$ = Observable.just(({ positions: [{
-          dailyHistoricals: data,
+          historicals: {
+            year: data,
+          },
           instrument: {
             symbol: 'AAPL',
             quote: { previous_close: "1234.5678" },
-          }
+          },
         }], portfolio: {} }))
         const dataInterval$ = Observable.just('1Y')
         const data$ = PortfolioData(model$, dataInterval$)
@@ -137,11 +167,13 @@ describe('Portfolio Data', () => {
         data.forEach((e, i) =>
           e.begins_at = moment().subtract(data.length - 1 - i, 'month').format(dateFormat))
         const model$ = Observable.just(({ positions: [{
-          dailyHistoricals: data,
+          historicals: {
+            year: data,
+          },
           instrument: {
             symbol: 'AAPL',
             quote: { previous_close: "1234.5678" },
-          }
+          },
         }], portfolio: {} }))
         const dataInterval$ = Observable.just('3M')
         const data$ = PortfolioData(model$, dataInterval$)
@@ -149,7 +181,7 @@ describe('Portfolio Data', () => {
           expect(d.data).toEqual([
             data[data.length - 3],
             data[data.length - 2],
-            data[data.length - 1]
+            data[data.length - 1],
           ])
           done()
         })
@@ -161,11 +193,13 @@ describe('Portfolio Data', () => {
         data.forEach((e, i) =>
           e.begins_at = moment().subtract(data.length - 1 - i, 'day').format(dateFormat))
         const model$ = Observable.just(({ positions: [{
-          intradayHistoricals: data,
+          historicals: {
+            day: data,
+          },
           instrument: {
             symbol: 'AAPL',
             quote: { previous_close: "1234.5678" },
-          }
+          },
         }], portfolio: {} }))
         const dataInterval$ = Observable.just('1D')
         const data$ = PortfolioData(model$, dataInterval$)
@@ -183,11 +217,13 @@ describe('Portfolio Data', () => {
         data.forEach((e, i) =>
           e.begins_at = moment().subtract(data.length - 1 - i, 'hour').format(dateFormat))
         const model$ = Observable.just(({ positions: [{
-          intradayHistoricals: data,
+          historicals: {
+            day: data,
+          },
           instrument: {
             symbol: 'AAPL',
             quote: { previous_close: "1234.5678" },
-          }
+          },
         }], portfolio: {} }))
         const dataInterval$ = Observable.just('1D')
         const data$ = PortfolioData(model$, dataInterval$)
