@@ -5,7 +5,7 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kahlil/cycle-browserify-boilerplate.git"
+    "url": "https://github.com/felipecsl/roberthood"
   },
   "scripts": {
     "build": "browserify -d -e src/app.js -t babelify -o public/javascripts/bundle.js",
