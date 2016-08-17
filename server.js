@@ -9,14 +9,6 @@ let server = express();
 let BASE_URL = 'https://api.robinhood.com';
 let port = process.env.PORT || 3000;
 
-browserify()
-  .transform(babelify)
-  .transform({global: true}, 'uglifyify')
-  .require("src/app.js", { entry: true })
-  .bundle()
-  .on("error", function (err) { console.log("Error: " + err.message); })
-  .pipe(fs.createWriteStream("public/javascripts/bundle.js"));
-
 server.engine('html', require('ejs').renderFile);
 server.use(bodyParser.urlencoded({ extended: true }));
 server.use(express.static('public'));

@@ -73,17 +73,5 @@
       "stage-0"
     ]
   },
-  "browserify": {
-    "transform": [
-      [
-        "babelify",
-        {
-          "sourceMap": true,
-          "sourceMapRelative": "."
-        }
-      ],
-      "require-globify"
-    ]
-  },
   "license": "MIT"
 }
